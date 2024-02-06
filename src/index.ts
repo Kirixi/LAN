@@ -2,24 +2,11 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import { connectDb } from "./db/connect.js";
 
 dotenv.config();
 
 export const app = express();
-
-const mongoConnectionString = "mongodb://admin:admin@localhost:27017?authSource=admin"
-
-async function connectToDB(connectionString: string) {
-    await mongoose.connect(connectionString);
-    console.log("Connection Successful");
-
-}
-
-try {
-    await connectToDB(mongoConnectionString);
-} catch (e) {
-    console.log("Error connecting to DB", e)
-}
 
 const PORT = 8000;
 
@@ -32,6 +19,7 @@ app.get('/', (req, res) => {
 
 })
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
     console.log(`App is listening on port ${PORT}`)
+    await connectDb();
 })
