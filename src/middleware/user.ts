@@ -17,7 +17,7 @@ const createUser = async (req: Request, res: Response) => {
     const response = await user.save();
 
     return res.status(200).json(response);
-  } catch (e) {
+  } catch (e: any) {
     console.log(e);
     return e.message;
   }

@@ -3,9 +3,10 @@ import * as dotenv from "dotenv";
 import mongoose, { Schema } from "mongoose";
 import { User } from "./interfaces.js";
 // import { createCollections } from "./collections.js";
+dotenv.config();
 
-const mongoConnectionString =
-  "mongodb://admin:admin@localhost:27017?authSource=admin";
+console.log(process.env.CONNECTION_STRING);
+const mongoConnectionString: any = process.env.CONNECTION_STRING;
 
 export const client = mongoose.connect(mongoConnectionString);
 
