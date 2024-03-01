@@ -1,0 +1,15 @@
+services:
+  webserver:
+    build: .
+    image: lanserver
+    ports: 
+      - "8080:8000"
+  
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin 
+      MONGO_INITDB_ROOT_PASSWORD: admin  
+      MONGO_INITDB_DATABASE: DB 
