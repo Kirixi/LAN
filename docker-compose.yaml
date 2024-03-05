@@ -1,10 +1,24 @@
 services:
-  webserver:
+  webserver1: 
     build: .
     image: lanserver
     ports: 
-      - "8080:8000"
+      - "8000"
+    deploy:
+     replicas: 3 
   
+  # webserver2: 
+  #   build: .
+  #   image: lanserver
+  #   ports: 
+  #     - "8000"
+
+  # webserver3: 
+  #   build: .
+  #   image: lanserver
+  #   ports: 
+  #     - "8000"
+
   mongo:
     image: mongo:latest
     ports:
@@ -13,3 +27,12 @@ services:
       MONGO_INITDB_ROOT_USERNAME: admin 
       MONGO_INITDB_ROOT_PASSWORD: admin  
       MONGO_INITDB_DATABASE: DB 
+  
+  nginx: 
+    image: nginx:latest
+    ports: 
+      - "8080:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - webserver1
