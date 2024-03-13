@@ -1,7 +1,7 @@
 name: CI/CD Pipeline
 on: 
   push: 
-    branches: [main]
+    branches: [develop]
 
 jobs:
   quality-check:
@@ -10,14 +10,13 @@ jobs:
 
     steps:
     - name: Checkout
-    - uses: actions/chechout@v3
+      uses: actions/chechout@v3
       with:
         fetch-depth: 0
 
     - name: Sonar Qube Scanning
-    - uses: actions/sonarqube-action@v1.2.0
+      uses: actions/sonarqube-action@v1.2.0
       with:
         host: ${{ secrets.SONARQUBE_HOST }}
         login: ${{ secrets.SONARQUBE_TOKEN }}
-        
-          
+        projectKey: "LAN-project"
