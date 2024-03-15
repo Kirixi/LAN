@@ -13,4 +13,7 @@ router.get("/getUser/:username", user.getUserbyUsername);
 router.get("/getUsername/:email", user.getUsernamebyEmail);
 router.get("/login", user.login);
 
+router.put("/updatename/:id", user.updateUsername);
+
+
 export default router;

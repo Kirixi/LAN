@@ -11,7 +11,7 @@ const createUser = async (req: Request, res: Response) => {
       _id: new mongoose.Types.ObjectId(),
       email: req.body.email,
       password: passwordHash,
-      name: req.body.username,
+      username: req.body.username,
     });
 
     const response = await user.save();
@@ -83,6 +83,18 @@ const login = async (req: Request, res: Response) => {
   }
 };
 
+
+const updateUsername = async (req: Request, res: Response) => {
+  try {
+    const response = await UserModel.updateOne({ _id: req.params.id }, { $set: { username: req.body.username } });
+    return res.status(200).json(response)
+  }
+  catch (e: any) {
+    console.log(e.message);
+    return res.status(401).json({ message: e.message })
+  }
+}
+
 export default {
   createUser,
   getAllUsers,
@@ -90,4 +102,5 @@ export default {
   getUsernamebyEmail,
   getUserbyUsername,
   login,
+  updateUsername
 };

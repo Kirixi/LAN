@@ -6,7 +6,8 @@ services:
       - "8000"
     deploy:
      replicas: 3 
-  
+
+  # Used for testing load balancer.
   # webserver2: 
   #   build: .
   #   image: lanserver
