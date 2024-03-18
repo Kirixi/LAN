@@ -65,12 +65,12 @@ const getAllUsers = async (req: Request, res: Response) => {
 const login = async (req: Request, res: Response) => {
   try {
     const response = await UserModel.findOne({ email: req.body.email });
-    const passwordHash = await argon2.hash(req.body.password);
+    const passwordHash = req.body.password;
     const userPassword: string | undefined = response?.password;
 
     if (userPassword) {
-      if (await argon2.verify(passwordHash, userPassword)) {
-        return res.status(200).json(response);
+      if (await argon2.verify(userPassword, passwordHash)) {
+        return res.status(200).json({ message: "Welcome!", data: response });
       } else {
         return res.status(401).json({ message: "Incorrect password" });
       }
@@ -98,6 +98,9 @@ const updateUsername = async (req: Request, res: Response) => {
 
 const updateEmail = async (req: Request, res: Response) => {
   try {
+    if (!req.body.email) {
+      throw new Error("Email is required!");
+    }
     const response = await UserModel.updateOne(
       { _id: req.params.id },
       { $set: { email: req.body.email } }
