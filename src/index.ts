@@ -15,6 +15,8 @@ const PORT = 8000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
+
+// Add routes
 app.use("/api/user", userRoute);
 app.use("/api/post", postRoute);
 
