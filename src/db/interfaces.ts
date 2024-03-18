@@ -5,3 +5,9 @@ export interface User extends WithId<Document> {
     password: string;
     name: string;
 }
+
+export interface Post extends WithId<Document> {
+    content: string;
+    link: string | null;
+    parent_id: string;
+}
