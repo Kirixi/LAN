@@ -83,17 +83,39 @@ const login = async (req: Request, res: Response) => {
   }
 };
 
-
 const updateUsername = async (req: Request, res: Response) => {
   try {
-    const response = await UserModel.updateOne({ _id: req.params.id }, { $set: { username: req.body.username } });
-    return res.status(200).json(response)
-  }
-  catch (e: any) {
+    const response = await UserModel.updateOne(
+      { _id: req.params.id },
+      { $set: { username: req.body.username } }
+    );
+    return res.status(200).json(response);
+  } catch (e: any) {
     console.log(e.message);
-    return res.status(401).json({ message: e.message })
+    return res.status(401).json({ message: e.message });
   }
-}
+};
+
+const updateEmail = async (req: Request, res: Response) => {
+  try {
+    const response = await UserModel.updateOne(
+      { _id: req.params.id },
+      { $set: { email: req.body.email } }
+    );
+    return res.status(200).json(response);
+  } catch (e: any) {
+    return res.status(401).json(e.message);
+  }
+};
+
+const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const response = await UserModel.deleteOne({ _id: req.params.id });
+    return res.status(200).json(response);
+  } catch (e: any) {
+    return res.status(401).json(e.message);
+  }
+};
 
 export default {
   createUser,
@@ -102,5 +124,7 @@ export default {
   getUsernamebyEmail,
   getUserbyUsername,
   login,
-  updateUsername
+  updateUsername,
+  updateEmail,
+  deleteUser,
 };
