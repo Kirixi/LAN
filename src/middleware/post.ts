@@ -23,6 +23,17 @@ const createPost = async (req: Request, res: Response) => {
 
 }
 
+const getAllUserPost = async (req: Request, res: Response) => {
+
+    try {
+        const response = await PostModel.findById({ _id: req.params.id })
+        return res.status(200).json({ data: response })
+    } catch (e: any) {
+        return res.status(401).json({ message: e.message })
+    }
+
+}
+
 const getAllPost = async (req: Request, res: Response) => {
 
     try {
@@ -53,4 +64,4 @@ const deletePost = async (req: Request, res: Response) => {
     }
 }
 
-export default { createPost, getAllPost, updatePost, deletePost }
+export default { createPost, getAllPost, getAllUserPost, updatePost, deletePost }
