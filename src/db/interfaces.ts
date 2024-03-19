@@ -10,4 +10,14 @@ export interface Post extends WithId<Document> {
     content: string;
     link: string | null;
     parent_id: string;
+    comments: []
+}
+
+
+export interface Comment extends WithId<Document> {
+    userEmail: string,
+    content: string,
+    link: string | null,
+    createdAt: Date,
+    parentId: string,
 }
