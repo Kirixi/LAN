@@ -13,7 +13,6 @@ const postSchema = new Schema<Post>({
   content: { type: String, required: true },
   link: { type: String, required: false },
   parent_id: { type: String, required: true },
-  comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }]
 })
 
 const commentSchema = new Schema<Comment>({

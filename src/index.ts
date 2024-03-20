@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import { connectDb } from "./db/connect.js";
 import userRoute from "./routes/user.routes.js";
 import postRoute from "./routes/post.routes.js";
+import commentRoute from "./routes/comment.routes.js";
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.use(cors());
 // Add routes
 app.use("/api/user", userRoute);
 app.use("/api/post", postRoute);
+app.use("/api/comment", commentRoute)
 
 app.get("/", (req, res) => {
   res.status(200).send("hello world!");

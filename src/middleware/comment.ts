@@ -13,6 +13,7 @@ const createComment = async (req: Request, res: Response) => {
             content: req.body.content,
             link: req.body.link,
             createdAt: req.body.createdAt,
+            parentId: req.body.parentId
         })
 
         const response = await comment.save();
@@ -27,7 +28,7 @@ const createComment = async (req: Request, res: Response) => {
 const getUserComments = async (req: Request, res: Response) => {
 
     try {
-        const response = CommentModel.find({ _id: req.params.id });
+        const response = CommentModel.find({ userEmail: req.params.email });
         return res.status(200).json({ data: response })
     } catch (e: any) {
         return res.status(401).json({ message: e.message })

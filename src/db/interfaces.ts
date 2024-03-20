@@ -10,7 +10,6 @@ export interface Post extends WithId<Document> {
     content: string;
     link: string | null;
     parent_id: string;
-    comments: []
 }
 
 
