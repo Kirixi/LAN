@@ -1,4 +1,4 @@
-import routes from "./routes/index.ts";
+import routes from "./routes/index.js";
 import express from "express";
 import cors from "cors";
 

@@ -1,5 +1,5 @@
 import request from 'supertest';
-import createServer from '../server.ts';
+import createServer from '../server.js';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 

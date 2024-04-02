@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import { connectDb } from "./db/connect.js";
-import createServer from "./server.ts";
+import createServer from "./server.js";
 
 
 dotenv.config();
