@@ -13,7 +13,8 @@ const postSchema = new Schema<Post>({
   content: { type: String, required: true },
   link: { type: String, required: false },
   parent_id: { type: String, required: true },
-})
+  createdAt: { type: Date, required: true },
+});
 
 const commentSchema = new Schema<Comment>({
   userEmail: { type: String, required: true },
@@ -21,7 +22,7 @@ const commentSchema = new Schema<Comment>({
   link: { type: String, required: false },
   createdAt: { type: Date, required: true },
   parentId: { type: String, required: true },
-})
+});
 
 //Exports the model with a singleton pattern
 export const UserModel = model("User", userSchema);

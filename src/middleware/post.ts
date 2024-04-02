@@ -12,6 +12,7 @@ const createPost = async (req: Request, res: Response) => {
             content: req.body.content,
             link: req.body.link,
             parent_id: req.body.parent_id,
+            createdAt: req.body.createdAt,
         })
 
         const response = await post.save();

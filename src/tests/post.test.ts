@@ -26,7 +26,8 @@ describe('Post Routes', () => {
             .send({
                 content: "loser dwafwafad asdasd awd",
                 link: "1231455daw",
-                parent_id: "2"
+                parent_id: "2",
+                createdAt: "2022-08-23T16:50:22-07:00",
             });
 
         expect(res.statusCode).toEqual(200);
