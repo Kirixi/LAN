@@ -1,22 +1,37 @@
 import request from 'supertest';
 import createServer from '../server.ts';
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import mongoose from 'mongoose';
 
 const app = createServer();
+let mongoServer: MongoMemoryServer;
 
-describe('User Routes', () => {
-    it('should create a new user', async () => {
+beforeAll(async () => {
+    mongoServer = await MongoMemoryServer.create();
+    await mongoose.connect(mongoServer.getUri())
+
+})
+
+afterAll(async () => {
+    await mongoose.disconnect();
+    await mongoose.connection.close();
+    await mongoServer.stop();
+})
+
+describe('Post Routes', () => {
+    it('Should create a new post', async () => {
+
         const res = await request(app)
-            .post('/create')
+            .post('/api/post/create')
             .send({
-                username: 'testuser',
-                email: 'testuser@example.com',
-                password: 'password123',
+                content: "loser dwafwafad asdasd awd",
+                link: "1231455daw",
+                parent_id: "2"
             });
 
-        expect(res.statusCode).toEqual(201);
-        expect(res.body).toHaveProperty('id');
-        expect(res.body.username).toEqual('testuser');
+        expect(res.statusCode).toEqual(200);
+        expect(res.body).toHaveProperty('_id');
+        expect(res.body.link).toEqual('1231455daw');
     });
 
-    // Add more tests for other routes and scenarios
 });
