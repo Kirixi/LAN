@@ -35,4 +35,13 @@ describe('Post Routes', () => {
         expect(res.body.link).toEqual('1231455daw');
     });
 
+    it('Should get all the post made by user', async () => {
+        const res = await request(app).get('/api/post/userposts/2')
+
+        expect(res.statusCode).toEqual(200);
+        expect(res.body.data[0]).toHaveProperty('createdAt');
+        expect(res.body.data[0].parent_id).toEqual("2");
+
+    })
+
 });
