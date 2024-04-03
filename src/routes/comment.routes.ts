@@ -8,8 +8,8 @@ router.post("/create", comment.createComment);
 router.get("/getPostComments/:id", comment.getPostComments);
 router.get("/getUserComments/:email", comment.getUserComments);
 
-router.put("/update", comment.updateComment);
+router.put("/update/:id", comment.updateComment);
 
-router.delete("/delete", comment.deleteComment);
+router.delete("/delete/:id", comment.deleteComment);
 
 export default router;

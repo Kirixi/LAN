@@ -46,7 +46,7 @@ const getPostComments = async (req: Request, res: Response) => {
 
 const updateComment = async (req: Request, res: Response) => {
     try {
-        const response = await CommentModel.updateOne({ _id: req.body.id }, { $set: { content: req.body.content } })
+        const response = await CommentModel.updateOne({ _id: req.params.id }, { $set: { content: req.body.content } })
         return res.status(200).json({ data: response })
     } catch (e: any) {
         return res.status(401).json({ message: e.message })
