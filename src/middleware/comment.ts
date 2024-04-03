@@ -28,7 +28,7 @@ const createComment = async (req: Request, res: Response) => {
 const getUserComments = async (req: Request, res: Response) => {
 
     try {
-        const response = CommentModel.find({ userEmail: req.params.email });
+        const response = await CommentModel.find({ userEmail: req.params.email });
         return res.status(200).json({ data: response })
     } catch (e: any) {
         return res.status(401).json({ message: e.message })
@@ -37,7 +37,7 @@ const getUserComments = async (req: Request, res: Response) => {
 
 const getPostComments = async (req: Request, res: Response) => {
     try {
-        const response = CommentModel.find({ parentId: req.params.parentId });
+        const response = await CommentModel.find({ parentId: req.params.parentId });
         return res.status(200).json({ data: response })
     } catch (e: any) {
         return res.status(401).json({ message: e.message })
@@ -46,7 +46,7 @@ const getPostComments = async (req: Request, res: Response) => {
 
 const updateComment = async (req: Request, res: Response) => {
     try {
-        const response = CommentModel.updateOne({ _id: req.body.id }, { $set: { content: req.body.content } })
+        const response = await CommentModel.updateOne({ _id: req.body.id }, { $set: { content: req.body.content } })
         return res.status(200).json({ data: response })
     } catch (e: any) {
         return res.status(401).json({ message: e.message })
@@ -55,7 +55,7 @@ const updateComment = async (req: Request, res: Response) => {
 
 const deleteComment = async (req: Request, res: Response) => {
     try {
-        const response = CommentModel.deleteOne({ _id: req.params.id })
+        const response = await CommentModel.deleteOne({ _id: req.params.id })
         return res.status(200).json({ data: response })
     } catch (e: any) {
         return res.status(401).json({ message: e.message })
