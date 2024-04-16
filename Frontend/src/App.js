@@ -30,7 +30,6 @@ function App() {
   };
 
   const logoutUser = () => {
-    console.log(user);
     logout();
     setUser(null);
     setLoggedIn(false);
@@ -43,27 +42,13 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route
-            path="login"
-            element={<Login loginUser={loginUser} verifyUser={verifyUser} />}
-          />
+          <Route path="login" element={<Login loginUser={loginUser} verifyUser={verifyUser} />} />
           <Route path="signup" element={<SignUp loginUser={loginUser} />} />
           <Route path="users" element={<Users user={user} />} />
           <Route path="testing" element={<Testing />} />
-          <Route
-            path="profile/:id"
-            element={<Profile user={user} logout={logoutUser} />}
-          />
-          <Route
-            path="forum"
-            element={<Forum user={user} isLoggedIn={isLoggedIn} />}
-          />
-          <Route
-            path="authenticate"
-            element={
-              <Authentication user={userAuthenticate} loginUser={loginUser} />
-            }
-          />
+          <Route path="profile/:id" element={<Profile user={user} logout={logoutUser} />} />
+          <Route path="forum" element={<Forum user={user} isLoggedIn={isLoggedIn} />} />
+          <Route path="authenticate" element={<Authentication user={userAuthenticate} loginUser={loginUser} />} />
           <Route path="*" element={<Errorpage />} />
         </Routes>
       </main>

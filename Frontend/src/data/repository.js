@@ -22,7 +22,7 @@ async function verifyEmail(email) {
 
 async function findUser(id) {
   try {
-    const response = await axios.get(API_HOST + `/api/users/select/${id}`);
+    const response = await axios.get(API_HOST + `/api/user/select/${id}`);
     return response.data;
   } catch (e) {
     throw e;
@@ -30,7 +30,6 @@ async function findUser(id) {
 }
 
 async function createUser(user) {
-  console.log(user);
   const response = await axios.post(API_HOST + "/api/user/create", user);
   return response.data;
 }

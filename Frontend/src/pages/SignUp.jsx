@@ -48,10 +48,10 @@ function SignUp(props) {
                 joined: joined,
               };
 
-              await createUser(user);
+              const createdUser = await createUser(user);
 
-              props.loginUser(user); //Set logged in user
-              navigate(generatePath("/profile/:id", { id: user.email }));
+              props.loginUser(createdUser); //Set logged in user
+              navigate(generatePath("/profile/:id", { id: createdUser._id }));
             }, 1500);
           }}
         >

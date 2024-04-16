@@ -15,7 +15,15 @@ const createUser = async (req: Request, res: Response) => {
       joined: req.body.joined,
     });
 
-    const response = await user.save();
+    const savedUser = await user.save();
+    
+    const response = {
+      _id: savedUser._id,
+      email: savedUser.email,
+      username: savedUser.username,
+      joined: savedUser.joined,
+    }
+    
 
     return res.status(200).json(response);
   } catch (e: any) {
@@ -41,7 +49,7 @@ const verifyEmail = async (req: Request, res:Response) => {
 
 const getUserById = async (req: Request, res: Response) => {
   try {
-    const response = await UserModel.findById(req.params.id);
+    const response = await UserModel.findById(req.params.id, {password: 0});
     return res.status(200).json(response);
   } catch (e: any) {
     console.log(e);
@@ -71,7 +79,7 @@ const getUserbyUsername = async (req: Request, res: Response) => {
 
 const getAllUsers = async (req: Request, res: Response) => {
   try {
-    const response = await UserModel.find();
+    const response = await UserModel.find({}, { password: 0 });
     return res.status(200).json(response);
   } catch (e: any) {
     console.log(e);
@@ -80,7 +88,7 @@ const getAllUsers = async (req: Request, res: Response) => {
 
 const login = async (req: Request, res: Response) => {
   try {
-    const response = await UserModel.findOne({ email: req.body.email });
+    const response = await UserModel.findOne({ email: req.body.email }, { password: 0 });
     const passwordHash = req.body.password;
     const userPassword: string | undefined = response?.password;
 

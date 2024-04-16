@@ -34,14 +34,7 @@ import * as Yup from "yup";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import EditableControls from "./EditableControls";
-import {
-  findUser,
-  updateName,
-  updateEmail,
-  deleteUser,
-  getFollowings,
-  loadUserPosts,
-} from "../data/repository";
+import { findUser, updateName, updateEmail, deleteUser, getFollowings, loadUserPosts } from "../data/repository";
 import UserDisplay from "./UserDisplay";
 import Comment from "./Comment";
 
@@ -72,12 +65,12 @@ function Profile(props) {
         setFollows(follows);
         setUserName(currentUser.name);
         setUserEmail(currentUser.email);
-        setUserJoinedOn(currentUser.createdAt);
+        setUserJoinedOn(currentUser.joined);
         setIsLoading(false);
       }
       loadUser();
     },
-    [setFollows],
+    [id, setFollows],
     [setPosts]
   );
 
@@ -101,11 +94,7 @@ function Profile(props) {
               <Box pt={10} align={"center"}>
                 <Avatar bg="teal.500" size={"2xl"} />
               </Box>
-              <Stack
-                spacing={5}
-                p={10}
-                divider={<StackDivider borderColor="gray.200" />}
-              >
+              <Stack spacing={5} p={10} divider={<StackDivider borderColor="gray.200" />}>
                 <Formik
                   initialValues={{ name: userName }}
                   validationSchema={Yup.object({
@@ -138,22 +127,10 @@ function Profile(props) {
                             onSubmit={formik.handleSubmit}
                           >
                             <EditablePreview />
-                            <Input
-                              name="name"
-                              as={EditableInput}
-                              variant="flushed"
-                              size={"xl"}
-                              onChange={formik.handleChange}
-                            />
-                            {props.user.email === id && (
-                              <InputRightElement
-                                children={<EditableControls />}
-                              />
-                            )}
+                            <Input name="name" as={EditableInput} variant="flushed" size={"xl"} onChange={formik.handleChange} />
+                            {props.user.email === id && <InputRightElement children={<EditableControls />} />}
                           </Editable>
-                          <FormErrorMessage>
-                            {formik.errors.name}
-                          </FormErrorMessage>
+                          <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
                         </InputGroup>
                       </FormControl>
                       <Collapse in={alertName} animateOpacity>
@@ -171,18 +148,14 @@ function Profile(props) {
                     email: Yup.string()
                       .required("Email cannot be empty")
                       .email("Email must be a valid Email")
-                      .test(
-                        "validateEmail",
-                        "This email is already in use",
-                        async function () {
-                          const user = await findUser(this.parent.email);
-                          if (user === null) {
-                            return true;
-                          } else {
-                            return false;
-                          }
+                      .test("validateEmail", "This email is already in use", async function () {
+                        const user = await findUser(this.parent.email);
+                        if (user === null) {
+                          return true;
+                        } else {
+                          return false;
                         }
-                      ),
+                      }),
                   })}
                   onSubmit={async (value) => {
                     if (userEmail !== value.email) {
@@ -211,18 +184,10 @@ function Profile(props) {
                             onSubmit={formik.handleSubmit}
                           >
                             <EditablePreview />
-                            <Input
-                              name="email"
-                              as={EditableInput}
-                              variant="flushed"
-                              size={"xl"}
-                              onChange={formik.handleChange}
-                            />
+                            <Input name="email" as={EditableInput} variant="flushed" size={"xl"} onChange={formik.handleChange} />
                           </Editable>
                         </InputGroup>
-                        <FormErrorMessage>
-                          {formik.errors.email}
-                        </FormErrorMessage>
+                        <FormErrorMessage>{formik.errors.email}</FormErrorMessage>
                       </FormControl>
 
                       <Collapse in={alertEmail} animateOpacity>
@@ -256,11 +221,7 @@ function Profile(props) {
                 ) : (
                   <></>
                 )}
-                <AlertDialog
-                  isOpen={isOpen}
-                  leastDestructiveRef={cancelRef}
-                  onClose={onClose}
-                >
+                <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
                   <AlertDialogOverlay>
                     <AlertDialogContent>
                       <AlertDialogHeader fontSize="lg" fontWeight="bold">
@@ -270,14 +231,8 @@ function Profile(props) {
                       <AlertDialogBody>
                         {isDeletingUser ? (
                           <Box>
-                            <Text pb={3}>
-                              Deleting all your account data including posts
-                            </Text>
-                            <Progress
-                              size="sm"
-                              colorScheme="teal"
-                              isIndeterminate
-                            />
+                            <Text pb={3}>Deleting all your account data including posts</Text>
+                            <Progress size="sm" colorScheme="teal" isIndeterminate />
                           </Box>
                         ) : (
                           <Text>Confirm to delete your account</Text>
@@ -288,12 +243,7 @@ function Profile(props) {
                         <Button ref={cancelRef} onClick={onClose}>
                           Cancel
                         </Button>
-                        <Button
-                          colorScheme="red"
-                          onClick={deleteAccount}
-                          ml={3}
-                          isLoading={isDeletingUser}
-                        >
+                        <Button colorScheme="red" onClick={deleteAccount} ml={3} isLoading={isDeletingUser}>
                           Confirm
                         </Button>
                       </AlertDialogFooter>
@@ -309,13 +259,7 @@ function Profile(props) {
             <Heading>Comments</Heading>
           </Box>
           {posts.map((post) => (
-            <Comment
-              key={post.post_id}
-              name={post.name}
-              content={post.content}
-              time={post.createdAt}
-              link={post.link}
-            />
+            <Comment key={post.post_id} name={post.name} content={post.content} time={post.createdAt} link={post.link} />
           ))}
         </Stack>
         <Stack pt={70} pl={70}>
@@ -325,13 +269,7 @@ function Profile(props) {
 
           <Grid templateColumns="repeat(3, 1fr)" gap={3}>
             {follows.map((follow, index) => (
-              <UserDisplay
-                id={follow.follow_id}
-                name={follow.name}
-                email={follow.email}
-                user={id}
-                currentUser={props.user.email}
-              />
+              <UserDisplay id={follow.follow_id} name={follow.name} email={follow.email} user={id} currentUser={props.user.email} />
             ))}
           </Grid>
         </Stack>

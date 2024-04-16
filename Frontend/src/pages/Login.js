@@ -1,15 +1,4 @@
-import {
-  Box,
-  Container,
-  Center,
-  Stack,
-  Heading,
-  Button,
-  Text,
-  Link,
-  Alert,
-  AlertIcon,
-} from "@chakra-ui/react";
+import { Box, Container, Center, Stack, Heading, Button, Text, Link, Alert, AlertIcon } from "@chakra-ui/react";
 
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -26,7 +15,6 @@ function Login(props) {
 
   const onSubmit = async (user) => {
     const data = await verifyUser(user.email, user.password);
-    console.log("here");
     console.log(data);
     props.loginUser(data);
     return data;
@@ -41,9 +29,7 @@ function Login(props) {
             password: "",
           }}
           validationSchema={Yup.object({
-            email: Yup.string()
-              .email("Email must be a valid Email")
-              .required("Email is required"),
+            email: Yup.string().email("Email must be a valid Email").required("Email is required"),
             password: Yup.string()
               .required("Password is required")
               .test(
@@ -51,12 +37,7 @@ function Login(props) {
                 "Invalid Email or Password. Try Again",
                 //Check password and email of user
                 async function () {
-                  if (
-                    (await verifyUser(
-                      this.parent.email,
-                      this.parent.password
-                    )) !== null
-                  ) {
+                  if ((await verifyUser(this.parent.email, this.parent.password)) !== null) {
                     setAlertOn(true);
                     return true;
                   } else {
@@ -82,39 +63,19 @@ function Login(props) {
           validateOnBlur={false}
         >
           {(formik) => (
-            <Container
-              maxW="md"
-              boxShadow={"2xl"}
-              rounded={"lg"}
-              borderWidth={1}
-              onSubmit={formik.handleSubmit}
-              as="form"
-            >
+            <Container maxW="md" boxShadow={"2xl"} rounded={"lg"} borderWidth={1} onSubmit={formik.handleSubmit} as="form">
               <Box align={"center"} pt={8}>
                 <Heading fontSize={"3xl"}>Log In</Heading>
               </Box>
 
               <Stack spacing={6} py={10} px={6}>
-                <FormField
-                  name="email"
-                  type="email"
-                  placeholder="Enter your email address"
-                  label={"Email Address"}
-                />
+                <FormField name="email" type="email" placeholder="Enter your email address" label={"Email Address"} />
 
-                <FormField
-                  name="password"
-                  type="password"
-                  placeholder="Enter your password"
-                  label={"Password"}
-                />
+                <FormField name="password" type="password" placeholder="Enter your password" label={"Password"} />
 
                 <Box>
                   <Stack spacing={4}>
-                    <Alert
-                      status="success"
-                      display={alertOn ? "inherit" : "none"}
-                    >
+                    <Alert status="success" display={alertOn ? "inherit" : "none"}>
                       <AlertIcon />
                       Sending Verification Code!
                     </Alert>
@@ -129,12 +90,7 @@ function Login(props) {
                       Sign In
                     </Button>
 
-                    <Text
-                      fontSize={"sm"}
-                      color={"gray.600"}
-                      align={"center"}
-                      pt={5}
-                    >
+                    <Text fontSize={"sm"} color={"gray.600"} align={"center"} pt={5}>
                       Don't have an account?{" "}
                       <Link as={RouteLink} to="/signup" color={"blue.400"}>
                         Sign Up
