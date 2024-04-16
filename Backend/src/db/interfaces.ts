@@ -4,6 +4,7 @@ export interface User extends WithId<Document> {
   email: string;
   password: string;
   name: string;
+  joined: string;
 }
 
 export interface Post extends WithId<Document> {

@@ -1,50 +1,54 @@
 import axios from "axios";
-
-//The code below is taken from Lectorial code archive week 8
-//Writen by Shekhar Kalra
-
 // --- Constants ----------------------------------------------------------------------------------
-const API_HOST = "http://localhost:4000";
+const API_HOST = "http://localhost:8000";
 
 // --- User ---------------------------------------------------------------------------------------
 async function verifyUser(email, password) {
-  const response = await axios.get(API_HOST + "/api/users/login", {
+  const response = await axios.get(API_HOST + "/api/user/login", {
     params: { email, password },
   });
   const user = response.data;
   return user;
 }
 
+async function verifyEmail(email) {
+  try {
+    const response = await axios.get(API_HOST + `/api/user/verifyEmail/${email}`);
+    return response;
+  } catch (e) {
+    return false;
+  }
+}
+
 async function findUser(id) {
-  const response = await axios.get(API_HOST + `/api/users/select/${id}`);
-  return response.data;
+  try {
+    const response = await axios.get(API_HOST + `/api/users/select/${id}`);
+    return response.data;
+  } catch (e) {
+    throw e;
+  }
 }
 
 async function createUser(user) {
-  const response = await axios.post(API_HOST + "/api/users", user);
+  console.log(user);
+  const response = await axios.post(API_HOST + "/api/user/create", user);
   return response.data;
 }
 
 async function updateName(name, email) {
-  const response = await axios.put(
-    API_HOST + `/api/users/updatename/${email}`,
-    { name: name }
-  );
+  const response = await axios.put(API_HOST + `/api/user/updatename/${email}`, { name: name });
 
   return response.data;
 }
 
 async function updateEmail(email, newEmail) {
-  const response = await axios.put(
-    API_HOST + `/api/users/updateEmail/${email}`,
-    { newEmail: newEmail }
-  );
+  const response = await axios.put(API_HOST + `/api/user/updateEmail/${email}`, { newEmail: newEmail });
 
   return response.data;
 }
 
 async function deleteUser(email) {
-  const response = await axios.delete(API_HOST + `/api/users/delete/${email}`);
+  const response = await axios.delete(API_HOST + `/api/user/delete/${email}`);
 
   return response.data;
 }
@@ -183,10 +187,7 @@ async function deleteFollow(id) {
 async function editPost(id, post) {
   let response = null;
   if (post.link === "") {
-    response = await axios.put(
-      API_HOST + `/api/posts/updateContent/${id}`,
-      post
-    );
+    response = await axios.put(API_HOST + `/api/posts/updateContent/${id}`, post);
   } else {
     response = await axios.put(API_HOST + `/api/posts/update/${id}`, post);
   }
@@ -212,78 +213,73 @@ async function deleteReaction(id) {
   return response.data;
 }
 
-async function getAllReactions(){
+async function getAllReactions() {
   const reactions = await axios.get(API_HOST + "/api/reactions");
   return reactions.data;
 }
 
-
-async function getCommentReactions(){
+async function getCommentReactions() {
   const posts = await getComments();
   const reactions = await getAllReactions();
-  let forms = []
+  let forms = [];
 
-  for (const post of posts){
-    
+  for (const post of posts) {
     let p = {
-            content: post.content,
-            createdAt: post.createdAt,
-            link: post.link,
-            name: post.name,
-            parent_id: post.parent_id,
-            post_id: post.post_id,
-            updatedAt: post.updatedAt,
-            userEmail: post.userEmail,
-            counter: []
-          }
-    for (const reaction of reactions){
-      if (post.post_id === reaction.post_id){
+      content: post.content,
+      createdAt: post.createdAt,
+      link: post.link,
+      name: post.name,
+      parent_id: post.parent_id,
+      post_id: post.post_id,
+      updatedAt: post.updatedAt,
+      userEmail: post.userEmail,
+      counter: [],
+    };
+    for (const reaction of reactions) {
+      if (post.post_id === reaction.post_id) {
         const user = reaction.user_email;
-        p.counter.push({emoji: reaction.reaction, by: user });
+        p.counter.push({ emoji: reaction.reaction, by: user });
       }
     }
- 
+
     forms.push(p);
   }
-  
+
   return forms;
 }
 
-
-
-async function getPostReactions(){
+async function getPostReactions() {
   const posts = await getPosts();
   const reactions = await getAllReactions();
-  let forms = []
+  let forms = [];
 
-  for (const post of posts){
-    
+  for (const post of posts) {
     let p = {
-            content: post.content,
-            createdAt: post.createdAt,
-            link: post.link,
-            name: post.name,
-            parent_id: post.parent_id,
-            post_id: post.post_id,
-            updatedAt: post.updatedAt,
-            userEmail: post.userEmail,
-            counter: []
-          }
-    for (const reaction of reactions){
-      if (post.post_id === reaction.post_id){
+      content: post.content,
+      createdAt: post.createdAt,
+      link: post.link,
+      name: post.name,
+      parent_id: post.parent_id,
+      post_id: post.post_id,
+      updatedAt: post.updatedAt,
+      userEmail: post.userEmail,
+      counter: [],
+    };
+    for (const reaction of reactions) {
+      if (post.post_id === reaction.post_id) {
         const user = reaction.user_email;
-        p.counter.push({emoji: reaction.reaction, by: user});
+        p.counter.push({ emoji: reaction.reaction, by: user });
       }
     }
     forms.push(p);
   }
-  
+
   return forms;
 }
-
 
 export {
   verifyUser,
+  verifyEmail,
   findUser,
   createUser,
   getPosts,
@@ -305,5 +301,5 @@ export {
   getPostReactions,
   getCommentReactions,
   getUserReactions,
-  deleteReaction
+  deleteReaction,
 };

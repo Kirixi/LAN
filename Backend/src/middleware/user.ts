@@ -12,6 +12,7 @@ const createUser = async (req: Request, res: Response) => {
       email: req.body.email,
       password: passwordHash,
       username: req.body.username,
+      joined: req.body.joined,
     });
 
     const response = await user.save();
@@ -19,9 +20,24 @@ const createUser = async (req: Request, res: Response) => {
     return res.status(200).json(response);
   } catch (e: any) {
     console.log(e);
-    return e.message;
+    return res.status(401).json({ message: e.message});
+
   }
 };
+
+const verifyEmail = async (req: Request, res:Response) => {
+  try {
+    const response = await UserModel.findOne({ email: req.params.email });
+
+    if(response == null ){
+      throw new Error("not found");
+    }
+    return res.status(200).json({ verified: false })
+  } catch (e: any) {
+    return res.status(200).json({ verified: true});
+  }
+
+}
 
 const getUserById = async (req: Request, res: Response) => {
   try {
@@ -130,4 +146,5 @@ export default {
   updateUsername,
   updateEmail,
   deleteUser,
+  verifyEmail,
 };

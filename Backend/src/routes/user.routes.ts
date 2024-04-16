@@ -12,6 +12,8 @@ router.get("/select/:id", user.getUserById);
 router.get("/getUser/:username", user.getUserbyUsername);
 router.get("/getUsername/:email", user.getUsernamebyEmail);
 router.get("/login", user.login);
+router.get("/verifyEmail/:email", user.verifyEmail);
+
 
 router.put("/updateName/:id", user.updateUsername);
 router.put("/updateEmail/:id", user.updateEmail);

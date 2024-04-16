@@ -1,20 +1,9 @@
-import {
-  Box,
-  Container,
-  Center,
-  Stack,
-  Heading,
-  Button,
-  Text,
-  Link,
-  Alert,
-  AlertIcon,
-} from "@chakra-ui/react";
+import { Box, Container, Center, Stack, Heading, Button, Text, Link, Alert, AlertIcon } from "@chakra-ui/react";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { Link as RouteLink, useNavigate, generatePath} from "react-router-dom";
+import { Link as RouteLink, useNavigate, generatePath } from "react-router-dom";
 import FormField from "./FormField";
-import { findUser, createUser } from "../data/repository";
+import { verifyEmail, createUser } from "../data/repository";
 
 function SignUp(props) {
   const navigate = useNavigate();
@@ -34,18 +23,10 @@ function SignUp(props) {
             email: Yup.string()
               .email("Email must be a valid Email")
               .required("Email is required")
-              .test(
-                "validateEmail",
-                "An account with this email already exists",
-                async function () {
-                  const user = await findUser(this.parent.email);
-                  if (user !== null){
-                    return false
-                  }else{
-                    return true
-                  }
-                }
-              ),
+              .test("validateEmail", "An account with this email already exists", async function () {
+                const user = await verifyEmail(this.parent.email); // Checks if email has already been registered
+                return user.data.verified;
+              }),
             password: Yup.string()
               .required("Password is required")
               .matches(
@@ -59,80 +40,48 @@ function SignUp(props) {
           onSubmit={(values) => {
             setTimeout(async () => {
               const joined = new Date();
-         
+
               const user = {
-                name: values.name,
+                username: values.name,
                 email: values.email,
                 password: values.password,
-                joinedOn: joined,
+                joined: joined,
               };
-              
-              await createUser(user); //Add user to mySQL database
-              
+
+              await createUser(user);
+
               props.loginUser(user); //Set logged in user
-              navigate(generatePath("/profile/:id", { id:user.email }));
-              
+              navigate(generatePath("/profile/:id", { id: user.email }));
             }, 1500);
           }}
-          
         >
           {(formik) => (
-            <Container
-              maxW="md"
-              boxShadow={"2xl"}
-              rounded={"lg"}
-              borderWidth={1}
-              as="form"
-              onSubmit={formik.handleSubmit}
-            >
+            <Container maxW="md" boxShadow={"2xl"} rounded={"lg"} borderWidth={1} as="form" onSubmit={formik.handleSubmit}>
               <Box align={"center"} pt={8}>
                 <Heading fontSize={"3xl"}>Sign Up</Heading>
               </Box>
 
               <Stack spacing={6} py={10} px={6}>
-                <FormField
-                  name="name"
-                  type="text"
-                  placeholder="Enter your name"
-                  label={"Name"}
-                />
+                <FormField name="name" type="text" placeholder="Enter your name" label={"Name"} />
 
-                <FormField
-                  name="email"
-                  type="email"
-                  placeholder="Enter your email address"
-                  label={"Email Address"}
-                />
+                <FormField name="email" type="email" placeholder="Enter your email address" label={"Email Address"} />
 
-                <FormField
-                  name="password"
-                  type="password"
-                  placeholder="Create a password"
-                  label={"Password"}
-                />
+                <FormField name="password" type="password" placeholder="Create a password" label={"Password"} />
 
-                <FormField
-                  name="confirmPass"
-                  type="password"
-                  placeholder="Confirm your password"
-                  label={"Confirm Password"}
-                />
+                <FormField name="confirmPass" type="password" placeholder="Confirm your password" label={"Confirm Password"} />
 
                 <Box>
                   <Stack spacing={4}>
-                    <Alert
-                      status="success"
-                      display={formik.isSubmitting ? "inherit" : "none"}
-                    >
+                    <Alert status="success" display={formik.isSubmitting ? "inherit" : "none"}>
                       <AlertIcon />
                       Account successfully created!
                     </Alert>
                     <Button
                       type="submit"
                       isLoading={formik.isSubmitting}
-                      bg={"red.400"}
+                      bg={"teal"}
                       color={"white"}
-                      _hover={{ bg: "red.500" }}
+                      _hover={{ bg: "teal.400" }}
                       minW={"100%"}
                     >
                       Sign Up
