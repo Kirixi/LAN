@@ -3,12 +3,13 @@ import axios from "axios";
 const API_HOST = "http://localhost:8000";
 
 // --- User ---------------------------------------------------------------------------------------
-async function verifyUser(email, password) {
-  const response = await axios.get(API_HOST + "/api/user/login", {
-    params: { email, password },
-  });
-  const user = response.data;
-  return user;
+async function verifyUser(userObj) {
+  try {
+    const response = await axios.post(API_HOST + "/api/user/login", userObj);
+    return response.data;
+  } catch (e) {
+    throw e;
+  }
 }
 
 async function verifyEmail(email) {

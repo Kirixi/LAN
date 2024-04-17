@@ -3,21 +3,31 @@ import { Box, Container, Center, Stack, Heading, Button, Text, Link, Alert, Aler
 import { Formik } from "formik";
 import * as Yup from "yup";
 import FormField from "./FormField";
-import { Link as RouteLink, useNavigate } from "react-router-dom";
+import { Link as RouteLink, useNavigate, generatePath } from "react-router-dom";
 import { verifyUser } from "../data/repository";
 
-import { generateCode, sendCode } from "../services/VerifyUser";
-import { setAuthentication } from "../data/User";
+// import { generateCode, sendCode } from "../services/VerifyUser";
+// import { setAuthentication } from "../data/User";
 import { useState } from "react";
+
 function Login(props) {
   const [alertOn, setAlertOn] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const navigate = useNavigate();
 
   const onSubmit = async (user) => {
-    const data = await verifyUser(user.email, user.password);
-    console.log(data);
-    props.loginUser(data);
-    return data;
+    const userObj = {
+      email: user.email,
+      password: user.password,
+    };
+
+    try {
+      const data = await verifyUser(userObj);
+      props.loginUser(data);
+      return data;
+    } catch (e) {
+      console.log(e.message);
+    }
   };
 
   return (
@@ -37,27 +47,32 @@ function Login(props) {
                 "Invalid Email or Password. Try Again",
                 //Check password and email of user
                 async function () {
-                  if ((await verifyUser(this.parent.email, this.parent.password)) !== null) {
+                  try {
+                    const userObj = {
+                      email: this.parent.email,
+                      password: this.parent.password,
+                    };
+
+                    const res = await verifyUser(userObj);
+                    if (res !== null) {
+                      setAlertOn(false);
+                      return true; // Password and email are valid
+                    } else {
+                      throw new Error("Invalid Email or Password. Try Again");
+                    }
+                  } catch (error) {
+                    setErrorMsg(error.response.data.message);
                     setAlertOn(true);
-                    return true;
-                  } else {
-                    setAlertOn(false);
-                    return false;
                   }
                 }
               ),
           })}
           onSubmit={(values) => {
             setTimeout(() => {
-              // verifyUser()
-              const code = generateCode();
               onSubmit(values).then((res) => {
-                sendCode(res.name, code);
-                setAuthentication(res, code);
-                navigate("/authenticate");
+                navigate(generatePath("/profile/:id", { id: res.data._id }));
               });
             }, 1500);
-            //
           }}
           validateOnChange={false}
           validateOnBlur={false}
@@ -75,9 +90,9 @@ function Login(props) {
 
                 <Box>
                   <Stack spacing={4}>
-                    <Alert status="success" display={alertOn ? "inherit" : "none"}>
+                    <Alert status="error" display={alertOn ? "inherit" : "none"}>
                       <AlertIcon />
-                      Sending Verification Code!
+                      {errorMsg}
                     </Alert>
                     <Button
                       type="submit"

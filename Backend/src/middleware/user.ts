@@ -88,22 +88,22 @@ const getAllUsers = async (req: Request, res: Response) => {
 
 const login = async (req: Request, res: Response) => {
   try {
-    const response = await UserModel.findOne({ email: req.body.email }, { password: 0 });
+    const response = await UserModel.findOne({ email: req.body.email });
     const passwordHash = req.body.password;
     const userPassword: string | undefined = response?.password;
 
     if (userPassword) {
       if (await argon2.verify(userPassword, passwordHash)) {
-        return res.status(200).json({ message: "Welcome!", data: response });
+        const userObj = await UserModel.findOne({ email: req.body.email }, { password: 0 });
+        return res.status(200).json({ message: "Welcome!", data: userObj });
       } else {
         return res.status(401).json({ message: "Incorrect password" });
       }
     } else {
-      return res.status(401).json({ message: "User is not found" });
+      return res.status(404).json({ message: "User is not found" });
     }
   } catch (e: any) {
-    console.log(e);
-    return e.message;
+    return res.status(404).json({ message: "User is not found" });
   }
 };
 

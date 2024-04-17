@@ -5,13 +5,13 @@ const router = express.Router();
 
 //Post endpoints
 router.post("/create", user.createUser);
+router.post("/login", user.login);
 
 //Get endpoints
 router.get("/all", user.getAllUsers);
 router.get("/select/:id", user.getUserById);
 router.get("/getUser/:username", user.getUserbyUsername);
 router.get("/getUsername/:email", user.getUsernamebyEmail);
-router.get("/login", user.login);
 router.get("/verifyEmail/:email", user.verifyEmail);
 
 
