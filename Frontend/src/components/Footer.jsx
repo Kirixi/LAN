@@ -5,7 +5,7 @@ function Footer() {
       <div className="fpad">
         <Center>
           <Heading as="h5" size="sm">
-            This website is created by YeuHaw Teh and Isuru Wijesinghe © 2022
+            This website was a university project created by YeuHaw Teh and Isuru Wijesinghe © 2022
           </Heading>
         </Center>
       </div>

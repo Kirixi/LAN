@@ -55,16 +55,19 @@ async function deleteUser(email) {
 
 // --- Post ---------------------------------------------------------------------------------------
 async function getPosts() {
-  const posts = await axios.get(API_HOST + "/api/posts");
-  const users = await axios.get(API_HOST + "/api/users");
+  const posts = await axios.get(API_HOST + "/api/post/all");
+  const users = await axios.get(API_HOST + "/api/user/all");
+  console.log(users);
 
   for (let i = 0; i < posts.data.length; i++) {
     for (let j = 0; j < users.data.length; j++) {
-      if (users.data[j].email === posts.data[i].userEmail) {
-        posts.data[i].name = users.data[j].name;
+      if (users.data[j]._id === posts.data[i].parent_id) {
+        posts.data[i].name = users.data[j].username;
       }
     }
   }
+
+  console.log(posts.data);
   return posts.data;
 }
 
@@ -83,12 +86,16 @@ async function loadUserPosts(user) {
 }
 
 async function createPost(post) {
-  const response = await axios.post(API_HOST + "/api/posts/create", post);
-  return response.data;
+  try {
+    const response = await axios.post(API_HOST + "/api/post/create", post);
+    return response.data;
+  } catch (e) {
+    throw e;
+  }
 }
 
 async function getComments() {
-  const comments = await axios.get(API_HOST + "/api/posts/getComments");
+  const comments = await axios.get(API_HOST + "/api/post/getComments");
   const users = await axios.get(API_HOST + "/api/users");
 
   for (let i = 0; i < comments.data.length; i++) {
@@ -102,11 +109,11 @@ async function getComments() {
 }
 
 async function createComment(comment) {
-  const response = await axios.post(API_HOST + "/api/posts/createCom", comment);
+  const response = await axios.post(API_HOST + "/api/post/createCom", comment);
   return response.data;
 }
 async function deletePost(id) {
-  const response = await axios.delete(API_HOST + `/api/posts/delete/${id}`);
+  const response = await axios.delete(API_HOST + `/api/post/delete/${id}`);
   return response.data;
 }
 

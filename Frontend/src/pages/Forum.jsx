@@ -43,23 +43,18 @@ import {
   createComment,
   createReaction,
   getPostReactions,
-  getCommentReactions
-  
+  getCommentReactions,
 } from "../data/repository";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-import { FacebookCounter, FacebookSelector } from '@charkour/react-reactions';
+import { FacebookCounter, FacebookSelector } from "@charkour/react-reactions";
 
 function Forum(props) {
   const toast = useToast();
   const hiddenFileInput = useRef(null);
   const { isOpen, onToggle } = useDisclosure();
-  const {
-    isOpen: isOpenModal,
-    onOpen: onOpenModal,
-    onClose: onCloseModal,
-  } = useDisclosure();
+  const { isOpen: isOpenModal, onOpen: onOpenModal, onClose: onCloseModal } = useDisclosure();
   const [content, setContent] = useState(""); // Used to set react quill input
   const editContent = useRef("");
   const [posts, setPosts] = useState([]); // Used to set the list of post from API
@@ -69,61 +64,53 @@ function Forum(props) {
 
   const API = "https://api.cloudinary.com/v1_1/aglie-loop/image/upload";
 
-
   useEffect(() => {
     async function loadPosts() {
-      const postData = await getPostReactions();
-      const commentData = await getCommentReactions();
-      await getPostReactions();
+      const postData = await getPosts();
+      // const commentData = await getCommentReactions();
+      // await getPostReactions();
       setPosts(postData);
-      setComments(commentData);
+      // setComments(commentData);
     }
     loadPosts();
-  }, [setPosts], );
+  }, [setPosts]);
 
-
-  async function newReaction(post_id, emoji){
+  async function newReaction(post_id, emoji) {
     const reaction = {
       user_email: props.user.email,
       post_id: post_id,
-      reaction: emoji
-    }
+      reaction: emoji,
+    };
     let updatePost = posts;
-    for (const p of updatePost){
-      if (p.post_id === post_id){
-        p.counter.push({emoji: emoji, by: props.user.name });
+    for (const p of updatePost) {
+      if (p.post_id === post_id) {
+        p.counter.push({ emoji: emoji, by: props.user.name });
       }
     }
     setPosts([...updatePost]);
     await createReaction(reaction);
   }
 
-  async function newReactionComment(post_id, emoji){
+  async function newReactionComment(post_id, emoji) {
     const reaction = {
       user_email: props.user.email,
       post_id: post_id,
-      reaction: emoji
-    }
+      reaction: emoji,
+    };
     let updateComment = comments;
-    for (const p of updateComment){
-      if (p.post_id === post_id){
-        p.counter.push({emoji: emoji, by: props.user.name });
+    for (const p of updateComment) {
+      if (p.post_id === post_id) {
+        p.counter.push({ emoji: emoji, by: props.user.name });
       }
     }
     setComments([...updateComment]);
     await createReaction(reaction);
   }
 
-
   function ModalComponent() {
     return (
       <>
-      
-        <Modal
-          closeOnOverlayClick={false}
-          isOpen={isOpenModal}
-          onClose={onCloseModal}
-        >
+        <Modal closeOnOverlayClick={false} isOpen={isOpenModal} onClose={onCloseModal}>
           <ModalOverlay />
           <ModalContent>
             <ModalHeader>Edit</ModalHeader>
@@ -140,12 +127,7 @@ function Forum(props) {
             </ModalBody>
 
             <ModalFooter>
-              <IconButton
-                size={"sm"}
-                colorScheme="orange"
-                icon={<FontAwesomeIcon size="2xl" icon={faImage} />}
-                onClick={onPressed}
-              >
+              <IconButton size={"sm"} colorScheme="orange" icon={<FontAwesomeIcon size="2xl" icon={faImage} />} onClick={onPressed}>
                 <input
                   id="clicker"
                   type="file"
@@ -238,6 +220,7 @@ function Forum(props) {
   const onSubmit = async () => {
     let post = {};
     const formData = new FormData();
+    const created = new Date();
 
     formData.append("file", image);
     formData.append("upload_preset", "my-uploads");
@@ -255,7 +238,7 @@ function Forum(props) {
     if (content.length > 600) {
       toast({
         title: "Error",
-        description: "Write less words.",
+        description: "600 Word limit exceeded.",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -267,15 +250,17 @@ function Forum(props) {
       console.log(link.data.secure_url);
 
       post = {
-        userEmail: props.user.email,
+        parent_id: props.user._id,
         content: content,
         link: link.data.secure_url,
+        createdAt: created,
       };
     } else {
       post = {
-        userEmail: props.user.email,
+        parent_id: props.user._id,
         content: content,
         link: "",
+        createdAt: created,
       };
     }
     onToggle();
@@ -326,20 +311,15 @@ function Forum(props) {
                 <Avatar bg="teal.500" size={"md"} />
               </Box>
               <Box>
-                <Heading size="sm" mt={2} p={3}>
-                  {props.user.name}
+                <Heading size="md" mt={2} p={3}>
+                  {props.user.username}
                 </Heading>
               </Box>
             </Flex>
             {image !== null && (
               <>
                 <div className="image-preview">
-                  <img
-                    src={URL.createObjectURL(image)}
-                    alt="preview"
-                    height={200}
-                    width={400}
-                  />
+                  <img src={URL.createObjectURL(image)} alt="preview" height={200} width={400} />
                 </div>
               </>
             )}
@@ -371,11 +351,7 @@ function Forum(props) {
               />
               <Spacer />
               <ButtonGroup>
-                <Button
-                  colorScheme="teal"
-                  onClick={onSubmit}
-                  data-testid="subPost"
-                >
+                <Button colorScheme="teal" onClick={onSubmit} data-testid="subPost">
                   Post
                 </Button>
                 <Button
@@ -394,48 +370,40 @@ function Forum(props) {
         {posts !== null &&
           posts.map((post) => (
             <>
-              <Box
-                key={post.post_id}
-                p={4}
-                rounded={"lg"}
-                borderWidth={1}
-                mt={3}
-              >
-                
-                
-                <Flex>
-                  <Box pt={2} pb={2}>
-                    <Avatar bg="teal.500" size={"md"} />
-                  </Box>
-                  <Box p={3}>
-                    <Heading size="sm">{post.name}</Heading>
-                    <Text color={"gray.500"} fontSize={"xs"}>
-                      {" "}
-                      Posted On{" "}
-                      {Intl.DateTimeFormat("en-GB", {
-                        weekday: "short",
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      }).format(new Date(post.createdAt))}
-                    </Text>
-                  </Box>
+              <Box key={post.post_id} p={4} rounded={"lg"} borderWidth={1} mt={3}>
+                <Box paddingLeft={3}>
+                  <Flex>
+                    <Box pt={2} pb={2}>
+                      <Avatar bg="teal.500" size={"md"} />
+                    </Box>
+                    <Box p={3}>
+                      <Heading size="sm">{post.name}</Heading>
+                      <Text color={"gray.500"} fontSize={"xs"}>
+                        {" "}
+                        Posted On{" "}
+                        {Intl.DateTimeFormat("en-GB", {
+                          weekday: "short",
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        }).format(new Date(post.createdAt))}
+                      </Text>
+                    </Box>
+                    <Spacer />
+
+                    {/* <Popover placement="top-start" matchWidth>
+                      <PopoverTrigger>
+                        <FacebookCounter counters={post.counter} user={props.user.email} />
+                      </PopoverTrigger>
+                      <PopoverContent borderWidth={0}>
+                        <FacebookSelector onSelect={(label) => newReaction(post.post_id, label)} />
+                      </PopoverContent>
+                    </Popover> */}
+                  </Flex>
+
+                  <div dangerouslySetInnerHTML={{ __html: post.content }} />
                   <Spacer />
-              
-                  <Popover placement='top-start' matchWidth>
-                    <PopoverTrigger>
-                      <FacebookCounter counters={post.counter} user={props.user.email} />
-                    </PopoverTrigger>
-                    <PopoverContent borderWidth={0}>
-                      <FacebookSelector onSelect={(label) => newReaction(post.post_id, label)}/>
-                    </PopoverContent>
-                  </Popover>
-                  
-                </Flex>
-
-                <div dangerouslySetInnerHTML={{ __html: post.content }} />
-                <Spacer />
-
+                </Box>
                 <Editable
                   isPreviewFocusable={false}
                   onSubmit={() => {
@@ -445,12 +413,7 @@ function Forum(props) {
                   {post.link !== "" ? (
                     <>
                       <div className="image-preview">
-                        <img
-                          src={post.link}
-                          alt="preview"
-                          height={200}
-                          width={400}
-                        />
+                        <img src={post.link} alt="preview" height={200} width={400} />
                       </div>
                     </>
                   ) : (
@@ -508,18 +471,17 @@ function Forum(props) {
                               />
                             </Box>
                             <Spacer />
-                 
+
                             <Box mt={7}>
-                              <Popover placement='top-start' matchWidth>
+                              <Popover placement="top-start" matchWidth>
                                 <PopoverTrigger>
-                                  <FacebookCounter counters={comment.counter} user={props.user.email}/>
+                                  <FacebookCounter counters={comment.counter} user={props.user.email} />
                                 </PopoverTrigger>
                                 <PopoverContent borderWidth={0}>
-                                  <FacebookSelector onSelect={(label) => newReactionComment(comment.post_id, label)}/>
+                                  <FacebookSelector onSelect={(label) => newReactionComment(comment.post_id, label)} />
                                 </PopoverContent>
                               </Popover>
                             </Box>
-                            
                           </Flex>
                         </Box>
                       )

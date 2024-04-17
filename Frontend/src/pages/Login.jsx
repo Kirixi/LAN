@@ -23,7 +23,7 @@ function Login(props) {
 
     try {
       const data = await verifyUser(userObj);
-      props.loginUser(data);
+      props.loginUser(data.data);
       return data;
     } catch (e) {
       console.log(e.message);
