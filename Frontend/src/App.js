@@ -37,8 +37,9 @@ function App() {
 
   return (
     <Fragment>
+      <div style={{ height: "100%"}}>
       <Header user={user} logout={logoutUser} />
-      <main>
+      <main style={{ minHeight: "100%"}}>
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="login" element={<Login loginUser={loginUser} verifyUser={verifyUser} />} />
@@ -51,6 +52,7 @@ function App() {
         </Routes>
       </main>
       <Footer />
+      </div>
     </Fragment>
   );
 }

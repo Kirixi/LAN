@@ -300,7 +300,7 @@ function Forum(props) {
   };
 
   return (
-    <Box minH={"87vh"}>
+    <Box>
       <Container maxW="50%">
         <Box mb={2}>
           <Button colorScheme="teal" onClick={onToggle}>

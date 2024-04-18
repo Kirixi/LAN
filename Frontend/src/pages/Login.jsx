@@ -31,7 +31,7 @@ function Login(props) {
   };
 
   return (
-    <Box minH={"87vh"}>
+    <Box>
       <Center minH={"70vh"}>
         <Formik
           initialValues={{

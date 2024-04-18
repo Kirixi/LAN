@@ -1,5 +1,14 @@
 @import url("https://fonts.googleapis.com/css?family=Silkscreen");
 
+/* App.css */
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 .App {
   text-align: center;
 }
@@ -23,17 +32,20 @@
   padding-bottom: 20px;
   padding-top: 20px;
 }
+
 .error-logo-pos {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
 }
+
 .ql-editor {
   height: 250px;
 }
@@ -42,10 +54,12 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
 }
+
 .container-fluid {
   background-color: rgb(227, 93, 52);
   width: 100%;
@@ -58,13 +72,14 @@
 .App-header {
   display: grid;
   justify-content: center;
-  grid-template-columns: 150px 60px 300px; /*Make the grid smaller than the container*/
+  grid-template-columns: 150px 60px 300px;
+  /*Make the grid smaller than the container*/
   gap: 2px;
   padding: 5px;
   font-family: Silkscreen;
 }
 
-.App-header > div {
+.App-header>div {
   text-align: center;
   padding: 10px 0;
   font-size: 190px;
@@ -125,8 +140,9 @@ video {
 }
 
 h1 {
-  font-size: 2em; /* Adjust the size as needed */
- }
+  font-size: 2em;
+  /* Adjust the size as needed */
+}
 
 h2 {
   font-size: 1.5em;

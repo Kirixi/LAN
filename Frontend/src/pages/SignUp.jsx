@@ -9,7 +9,7 @@ function SignUp(props) {
   const navigate = useNavigate();
 
   return (
-    <Box minH={"87vh"}>
+    <Box>
       <Center minH={"80vh"}>
         <Formik
           initialValues={{
