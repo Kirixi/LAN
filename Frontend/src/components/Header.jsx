@@ -43,7 +43,7 @@ function Header(props) {
             </Box>
           ) : (
             <Box>
-              <Link to={`/profile/${props.user.email}`}>
+              <Link to={`/profile/${props.user._id}`}>
                 <Button colorScheme="teal" variant="ghost">
                   My Profile
                 </Button>

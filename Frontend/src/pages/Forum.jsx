@@ -256,15 +256,20 @@ function Forum(props) {
       post = {
         parent_id: props.user._id,
         content: content,
+        username: props.user.username,
         link: link.data.secure_url,
         createdAt: created,
+        updatedAt: null,
+
       };
     } else {
       post = {
         parent_id: props.user._id,
         content: content,
+        username: props.user.username,
         link: "",
         createdAt: created,
+        updatedAt: null,
       };
     }
     onToggle();

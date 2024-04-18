@@ -52,8 +52,7 @@ const getUserById = async (req: Request, res: Response) => {
     const response = await UserModel.findById(req.params.id, {password: 0});
     return res.status(200).json(response);
   } catch (e: any) {
-    console.log(e);
-    return e.message;
+    return res.status(404).json({ message: "User is not found" });
   }
 };
 

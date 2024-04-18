@@ -11,7 +11,10 @@ export interface Post extends WithId<Document> {
   content: string;
   link: string | null;
   parent_id: string;
+  username: string;
   createdAt: Date;
+  updatedAt: Date;
+  deleted: boolean;
 }
 
 export interface Comment extends WithId<Document> {

@@ -7,12 +7,15 @@ import mongoose from "mongoose";
 const createPost = async (req: Request, res: Response) => {
 
     try {
-        const post = new PostModel({
+        const post = new PostModel<Post>({
             _id: new mongoose.Types.ObjectId(),
             content: req.body.content,
             link: req.body.link,
+            username: req.body.username,
             parent_id: req.body.parent_id,
             createdAt: req.body.createdAt,
+            updatedAt: new Date(0),
+            deleted: false,
         })
 
         const response = await post.save();

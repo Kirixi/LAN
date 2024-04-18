@@ -13,8 +13,11 @@ const userSchema = new Schema<User>({
 const postSchema = new Schema<Post>({
   content: { type: String, required: true },
   link: { type: String, required: false },
+  username: { type: String, required: true },
   parent_id: { type: String, required: true },
   createdAt: { type: Date, required: true },
+  updatedAt: { type: Date, required: false },
+  deleted: { type: Boolean, required: true },
 });
 
 const commentSchema = new Schema<Comment>({
