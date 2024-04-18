@@ -146,7 +146,7 @@ function Forum(props) {
                 <IconButton
                   icon={<CheckIcon />}
                   onClick={() => {
-                    onEdit(selectedPost.post_id);
+                    onEdit(selectedPost._id);
                   }}
                 />
                 <IconButton icon={<CloseIcon />} onClick={onCloseModal} />
@@ -189,10 +189,10 @@ function Forum(props) {
       });
       return;
     }
-    if (editContent.current.length > 600) {
+    if (editContent.current.length > 800) {
       toast({
         title: "Error",
-        description: "Write less words.",
+        description: "800 word limit exceeded",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -239,10 +239,10 @@ function Forum(props) {
       });
       return;
     }
-    if (content.length > 600) {
+    if (content.length > 800) {
       toast({
         title: "Error",
-        description: "600 Word limit exceeded.",
+        description: "800 Word limit exceeded.",
         status: "error",
         duration: 5000,
         isClosable: true,

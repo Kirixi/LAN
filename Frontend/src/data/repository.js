@@ -57,7 +57,6 @@ async function deleteUser(email) {
 async function getPosts() {
   const posts = await axios.get(API_HOST + "/api/post/all");
   const users = await axios.get(API_HOST + "/api/user/all");
-  console.log(users);
 
   for (let i = 0; i < posts.data.length; i++) {
     for (let j = 0; j < users.data.length; j++) {
@@ -67,7 +66,6 @@ async function getPosts() {
     }
   }
 
-  console.log(posts.data);
   return posts.data;
 }
 
@@ -81,7 +79,6 @@ async function loadUserPosts(user) {
       userPosts.push(post);
     }
   }
-  // console.log(userPosts);
   return userPosts;
 }
 
@@ -192,20 +189,18 @@ async function deleteFollow(id) {
 }
 
 async function editPost(id, post) {
-  let response = null;
-  if (post.link === "") {
-    response = await axios.put(API_HOST + `/api/posts/updateContent/${id}`, post);
-  } else {
-    response = await axios.put(API_HOST + `/api/posts/update/${id}`, post);
+  try {
+    const response = await axios.put(API_HOST + `/api/post/update/${id}`, post);
+    return response.data;
+  } catch (e) {
+    throw e;
   }
 
-  return response.data;
 }
 
 // --- Reactions ---------------------------------------------------------------------------------------
 
 async function createReaction(reaction) {
-  console.log(reaction);
   const response = await axios.post(API_HOST + "/api/reactions/reaction", reaction);
   return response.data;
 }
