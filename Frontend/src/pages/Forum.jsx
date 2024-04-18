@@ -26,6 +26,10 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from "@chakra-ui/react";
 
 import axios from "axios";
@@ -33,7 +37,7 @@ import axios from "axios";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
-import { DeleteIcon, EditIcon, CheckIcon, CloseIcon } from "@chakra-ui/icons";
+import { DeleteIcon, EditIcon, CheckIcon, CloseIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import React, { useEffect, useRef } from "react";
 import {
   getPosts,
@@ -265,7 +269,7 @@ function Forum(props) {
     }
     onToggle();
     const newPost = await createPost(post);
-    newPost.name = props.user.name;
+    newPost.name = props.user.username;
     setPosts([...posts, newPost]);
     reset();
   };
@@ -371,25 +375,46 @@ function Forum(props) {
           posts.map((post) => (
             <>
               <Box key={post.post_id} p={4} rounded={"lg"} borderWidth={1} mt={3}>
-                <Box paddingLeft={3}>
-                  <Flex>
-                    <Box pt={2} pb={2}>
-                      <Avatar bg="teal.500" size={"md"} />
-                    </Box>
-                    <Box p={3}>
-                      <Heading size="sm">{post.name}</Heading>
-                      <Text color={"gray.500"} fontSize={"xs"}>
-                        {" "}
-                        Posted On{" "}
-                        {Intl.DateTimeFormat("en-GB", {
-                          weekday: "short",
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        }).format(new Date(post.createdAt))}
-                      </Text>
-                    </Box>
-                    <Spacer />
+                <Box paddingLeft={3} paddingY={4}>
+                  <Flex justifyContent={"space-between"}>
+                    <Flex>
+                      <Box pt={2} pb={2}>
+                        <Avatar bg="teal.500" size={"md"} />
+                      </Box>
+                      <Box p={3}>
+                        <Heading size="sm">{post.name}</Heading>
+                        <Text color={"gray.500"} fontSize={"xs"}>
+                          {" "}
+                          Posted On{" "}
+                          {Intl.DateTimeFormat("en-GB", {
+                            weekday: "short",
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          }).format(new Date(post.createdAt))}
+                        </Text>
+                      </Box>
+                    </Flex>
+
+                    {props.user._id === post.parent_id && (
+                      <Menu>
+                        <MenuButton as={IconButton} aria-label="Options" icon={<ChevronDownIcon />} variant="outline" />
+                        <MenuList>
+                          <MenuItem
+                            onClick={() => {
+                              setSelectedPost(post);
+                              onOpenModal();
+                            }}
+                            icon={<EditIcon />}
+                          >
+                            Edit
+                          </MenuItem>
+                          <MenuItem onClick={() => onDelete(post._id)} icon={<DeleteIcon />}>
+                            Delete
+                          </MenuItem>
+                        </MenuList>
+                      </Menu>
+                    )}
 
                     {/* <Popover placement="top-start" matchWidth>
                       <PopoverTrigger>
@@ -401,7 +426,7 @@ function Forum(props) {
                     </Popover> */}
                   </Flex>
 
-                  <div dangerouslySetInnerHTML={{ __html: post.content }} />
+                  <div style={{ paddingTop: "5px" }} dangerouslySetInnerHTML={{ __html: post.content }} />
                   <Spacer />
                 </Box>
                 <Editable
@@ -418,27 +443,6 @@ function Forum(props) {
                     </>
                   ) : (
                     <></>
-                  )}
-                  {props.user.email === post.userEmail && (
-                    <Flex mt={3}>
-                      <Spacer />
-                      <IconButton
-                        mr={4}
-                        size={"sm"}
-                        colorScheme="red"
-                        icon={<DeleteIcon />}
-                        onClick={() => onDelete(post.post_id)}
-                      ></IconButton>
-                      <IconButton
-                        mr={4}
-                        size={"sm"}
-                        icon={<EditIcon />}
-                        onClick={() => {
-                          setSelectedPost(post);
-                          onOpenModal();
-                        }}
-                      ></IconButton>
-                    </Flex>
                   )}
                 </Editable>
                 {comments !== null &&

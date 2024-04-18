@@ -123,3 +123,15 @@ video {
 .App-link {
   color: #61dafb;
 }
+
+h1 {
+  font-size: 2em; /* Adjust the size as needed */
+ }
+
+h2 {
+  font-size: 1.5em;
+}
+
+h3 {
+  font-size: 1.1rem;
+}
