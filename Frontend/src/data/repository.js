@@ -69,17 +69,9 @@ async function getPosts() {
   return posts.data;
 }
 
-async function loadUserPosts(user) {
-  const posts = await getPosts();
-
-  let userPosts = [];
-
-  for (const post of posts) {
-    if (post.userEmail === user) {
-      userPosts.push(post);
-    }
-  }
-  return userPosts;
+async function loadUserPosts(id) {
+  const response = await axios.get(API_HOST + `/api/post/userposts/${id}`);
+  return response.data;
 }
 
 async function createPost(post) {

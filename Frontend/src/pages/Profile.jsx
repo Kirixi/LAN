@@ -59,11 +59,12 @@ function Profile(props) {
     () => {
       async function loadUser() {
         const currentUser = await findUser(id);
-        const follows = await getFollowings(id);
-        const posts = await loadUserPosts(id);
-        setPosts(posts);
+        // const follows = await getFollowings(id);
+        const postObj = await loadUserPosts(id);
+        console.log(postObj)
+        setPosts(postObj.data);
         setFollows(follows);
-        setUserName(currentUser.name);
+        setUserName(currentUser.username);
         setUserEmail(currentUser.email);
         setUserJoinedOn(currentUser.joined);
         setIsLoading(false);
@@ -214,7 +215,7 @@ function Profile(props) {
                 </Box>
               </Stack>
               <Box pl={10} pr={10} pb={10}>
-                {props.user.email === id ? (
+                {props.user._id === id ? (
                   <Button colorScheme="red" onClick={onOpen} minW={"100%"}>
                     DELETE ACCOUNT
                   </Button>
