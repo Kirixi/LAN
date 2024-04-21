@@ -71,13 +71,10 @@ function Forum(props) {
   useEffect(() => {
     async function loadPosts() {
       const postData = await getPosts();
-      // const commentData = await getCommentReactions();
-      // await getPostReactions();
       setPosts(postData);
-      // setComments(commentData);
     }
     loadPosts();
-  }, [setPosts]);
+  }, []);
 
   async function newReaction(post_id, emoji) {
     const reaction = {
@@ -161,15 +158,18 @@ function Forum(props) {
   //Fetch all the posts made by all the users
 
   const onComment = async (e, post) => {
+    const created = new Date();
     const comment = {
       content: e.target.value,
-      userEmail: post.userEmail,
-      parent_id: post.post_id,
+      username: post.username,
+      parent_id: post._id,
+      createdAt: created,
     };
 
+
     const newComment = await createComment(comment);
-    newComment.name = props.user.name;
-    setComments([...comments, newComment]);
+    const newPost = await getPosts();
+    setPosts(newPost);
     e.target.value = "";
   };
 
@@ -387,7 +387,7 @@ function Forum(props) {
                         <Avatar bg="teal.500" size={"md"} />
                       </Box>
                       <Box p={3}>
-                        <Heading size="sm">{post.name}</Heading>
+                        <Heading size="sm">{post.username}</Heading>
                         <Text color={"gray.500"} fontSize={"xs"}>
                           {" "}
                           Posted On{" "}
@@ -450,51 +450,50 @@ function Forum(props) {
                     <></>
                   )}
                 </Editable>
-                {comments !== null &&
-                  comments.map(
+                {post.comments !== null &&
+                  post.comments.map(
                     (comment) =>
-                      comment.parent_id === post.post_id && (
-                        <Box rounded={"lg"} mt={3}>
-                          <Flex>
-                            <Box pt={2} pb={2}>
-                              <Avatar bg="teal.500" size={"md"} />
-                            </Box>
-                            <Box p={3}>
-                              <HStack spacing="24px">
-                                <Heading size="sm">{comment.name}</Heading>
-                                <Text color={"gray.500"} fontSize={"xs"}>
-                                  {" "}
-                                  Posted On{" "}
-                                  {Intl.DateTimeFormat("en-GB", {
-                                    weekday: "short",
-                                    month: "short",
-                                    day: "numeric",
-                                    year: "numeric",
-                                  }).format(new Date(comment.createdAt))}
-                                </Text>
-                              </HStack>
-                              <div
-                                dangerouslySetInnerHTML={{
-                                  __html: comment.content,
-                                }}
-                              />
-                            </Box>
-                            <Spacer />
+                      <Box rounded={"lg"} mt={3} ml={3}>
+                        <Flex>
+                          <Box pt={2} pb={2}>
+                            <Avatar bg="teal.500" size={"md"} />
+                          </Box>
+                          <Box p={3}>
+                            <HStack spacing="24px">
+                              <Heading size="sm">{comment.username}</Heading>
+                              <Text color={"gray.500"} fontSize={"xs"}>
+                                {" "}
+                                Posted On{" "}
+                                {Intl.DateTimeFormat("en-GB", {
+                                  weekday: "short",
+                                  month: "short",
+                                  day: "numeric",
+                                  year: "numeric",
+                                }).format(new Date(comment.createdAt))}
+                              </Text>
+                            </HStack>
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: comment.content,
+                              }}
+                            />
+                          </Box>
+                          <Spacer />
 
-                            <Box mt={7}>
-                              <Popover placement="top-start" matchWidth>
-                                <PopoverTrigger>
-                                  <FacebookCounter counters={comment.counter} user={props.user.email} />
-                                </PopoverTrigger>
-                                <PopoverContent borderWidth={0}>
-                                  <FacebookSelector onSelect={(label) => newReactionComment(comment.post_id, label)} />
-                                </PopoverContent>
-                              </Popover>
-                            </Box>
-                          </Flex>
-                        </Box>
-                      )
-                  )}
+                          {/* <Box mt={7}>
+                            <Popover placement="top-start" matchWidth>
+                              <PopoverTrigger>
+                                <FacebookCounter counters={comment.counter} user={props.user.email} />
+                              </PopoverTrigger>
+                              <PopoverContent borderWidth={0}>
+                                <FacebookSelector onSelect={(label) => newReactionComment(comment.post_id, label)} />
+                              </PopoverContent>
+                            </Popover>
+                          </Box> */}
+                        </Flex>
+                      </Box>
+                  )
+                }
                 <Box p={3} rounded={"lg"} mt={3}>
                   <HStack spacing={2} direction="row">
                     <Box pt={2} pb={2}>
