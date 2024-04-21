@@ -23,6 +23,7 @@ const postSchema = new Schema<Post>({
 
 const commentSchema = new Schema<Comment>({
   username: { type: String, required: true },
+  user_id: { type: String, required: true },
   content: { type: String, required: true },
   createdAt: { type: Date, required: true },
   updatedAt: { type: Date, required: true },

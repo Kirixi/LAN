@@ -9,6 +9,7 @@ const createComment = async (req: Request, res: Response) => {
         const comment = new CommentModel<Comment>({
             _id: new mongoose.Types.ObjectId(),
             username: req.body.username,
+            user_id: req.body.user_id,
             content: req.body.content,
             createdAt: req.body.createdAt,
             updatedAt: new Date(0),

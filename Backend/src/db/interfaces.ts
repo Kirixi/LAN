@@ -21,6 +21,7 @@ export interface Post extends WithId<Document> {
 export interface Comment extends WithId<Document> {
   username: string;
   content: string;
+  user_id: string;
   createdAt: Date;
   updatedAt: Date;
   parent_id: string;

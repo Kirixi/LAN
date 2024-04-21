@@ -30,6 +30,10 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  EditableInput,
+  EditablePreview,
+  useEditableControls,
+  EditableTextarea,
 } from "@chakra-ui/react";
 
 import axios from "axios";
@@ -161,7 +165,8 @@ function Forum(props) {
     const created = new Date();
     const comment = {
       content: e.target.value,
-      username: post.username,
+      username: props.user.username,
+      user_id: props.user._id,
       parent_id: post._id,
       createdAt: created,
     };
@@ -434,7 +439,7 @@ function Forum(props) {
                   <div style={{ paddingTop: "5px" }} dangerouslySetInnerHTML={{ __html: post.content }} />
                   <Spacer />
                 </Box>
-                <Editable
+                {/* <Editable
                   isPreviewFocusable={false}
                   onSubmit={() => {
                     onEdit(post.post_id);
@@ -449,36 +454,61 @@ function Forum(props) {
                   ) : (
                     <></>
                   )}
-                </Editable>
+                </Editable> */}
                 {post.comments !== null &&
                   post.comments.map(
                     (comment) =>
-                      <Box rounded={"lg"} mt={3} ml={3}>
-                        <Flex>
-                          <Box pt={2} pb={2}>
-                            <Avatar bg="teal.500" size={"md"} />
-                          </Box>
-                          <Box p={3}>
-                            <HStack spacing="24px">
-                              <Heading size="sm">{comment.username}</Heading>
-                              <Text color={"gray.500"} fontSize={"xs"}>
-                                {" "}
-                                Posted On{" "}
-                                {Intl.DateTimeFormat("en-GB", {
-                                  weekday: "short",
-                                  month: "short",
-                                  day: "numeric",
-                                  year: "numeric",
-                                }).format(new Date(comment.createdAt))}
-                              </Text>
-                            </HStack>
-                            <div
-                              dangerouslySetInnerHTML={{
-                                __html: comment.content,
-                              }}
-                            />
-                          </Box>
-                          <Spacer />
+                      <Box rounded={"lg"} mt={3} ml={3} width={"100%"}>
+                        <Flex width={"100%"} justifyContent={"space-between"}>
+                          <Flex>
+                            <Box pt={2} pb={2}>
+                              <Avatar bg="teal.500" size={"md"} />
+                            </Box>
+                            <Box p={3}>
+                              <HStack spacing="24px">
+                                <Heading size="sm">{comment.username}</Heading>
+                                <Text color={"gray.500"} fontSize={"xs"}>
+                                  {" "}
+                                  Posted On{" "}
+                                  {Intl.DateTimeFormat("en-GB", {
+                                    weekday: "short",
+                                    month: "short",
+                                    day: "numeric",
+                                    year: "numeric",
+                                  }).format(new Date(comment.createdAt))}
+                                </Text>
+                              </HStack>
+                              {/* <div
+                                dangerouslySetInnerHTML={{
+                                  __html: comment.content,
+                                }}
+                              /> */}
+                              <Editable defaultValue={comment.content} isPreviewFocusable={true}>
+                                <EditablePreview />
+                                <EditableTextarea width={"100%"} />
+                              </Editable>
+                            </Box>
+                          </Flex>
+
+                          {props.user._id === comment.user_id && (
+                            <Menu>
+                              <MenuButton as={IconButton} aria-label="Options" icon={<ChevronDownIcon />} variant="outline" />
+                              <MenuList>
+                                <MenuItem
+                                  onClick={() => {
+                                  }}
+                                  icon={<EditIcon />}
+                                >
+                                  Edit
+                                </MenuItem>
+                                <MenuItem onClick={() => onDelete(post._id)} icon={<DeleteIcon />}>
+                                  Delete
+                                </MenuItem>
+                              </MenuList>
+                            </Menu>
+                          )}
+
+
 
                           {/* <Box mt={7}>
                             <Popover placement="top-start" matchWidth>

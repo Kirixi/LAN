@@ -62,7 +62,7 @@ const getAllPost = async (req: Request, res: Response) => {
 const updatePost = async (req: Request, res: Response) => {
 
     try {
-        const response = await PostModel.updateOne({ _id: req.params.id }, { $set: { content: req.body.content } });
+        const response = await PostModel.updateOne({ _id: req.params.id }, { $set: { content: req.body.content, updatedAt: req.body.updatedAt } });
         return res.status(200).json({ message: "Post Successfully Updated!" })
     } catch (e: any) {
         return res.status(401).json(e.message);
