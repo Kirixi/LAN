@@ -21,7 +21,6 @@ const createComment = async (req: Request, res: Response) => {
 
         return res.status(200).json({ data: response })
     } catch (e: any) {
-        console.log(e.message)
         return res.status(401).json({ message: e.message })
     }
 

@@ -27,3 +27,9 @@ export interface Comment extends WithId<Document> {
   parent_id: string;
   deleted: boolean;
 }
+
+export interface Follows extends WithId<Document> {
+  user_id: string;
+  follower_id: string;
+  follower_username: string;
+}

@@ -1,7 +1,7 @@
 import { client } from "./connect.js";
 import { Schema, model } from "mongoose";
 
-import { User, Post, Comment } from "./interfaces.js";
+import { User, Post, Comment, Follows } from "./interfaces.js";
 
 const userSchema = new Schema<User>({
   email: { type: String, required: true },
@@ -31,7 +31,14 @@ const commentSchema = new Schema<Comment>({
   deleted: { type: Boolean, required: true },
 });
 
+const followSchema = new Schema<Follows>({
+  user_id: { type: String, required: true },
+  follower_id: { type: String, required: true },
+  follower_username: { type: String, required: true },
+})
+
 //Exports the model with a singleton pattern
 export const UserModel = model("User", userSchema);
 export const PostModel = model("Post", postSchema);
 export const CommentModel = model("Comment", commentSchema);
+export const FollowModel = model("Follows", followSchema);
