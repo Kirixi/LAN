@@ -34,7 +34,6 @@ const getAllUserPost = async (req: Request, res: Response) => {
         const posts = await PostModel.find({ parent_id: req.params.id })
         for(const post of posts) {
             const comments = await CommentModel.find({ parent_id: post._id})
-            console.log(comments)
             post.comments = comments;
         }
         

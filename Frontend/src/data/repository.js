@@ -62,7 +62,6 @@ async function getPosts() {
   } catch (e) {
     throw e;
   }
-
 }
 
 async function loadUserPosts(id) {
@@ -100,8 +99,26 @@ async function createComment(comment) {
   } catch (e) {
     throw e;
   }
-
 }
+
+async function updateComment(id, updatedComment) {
+  try {
+    const response = await axios.put(API_HOST + `/api/comment/update/${id}`, updatedComment);
+    return response.data;
+  } catch (e) {
+    throw e;
+  }
+}
+
+async function deleteComment(id) {
+  try {
+    const response = await axios.delete(API_HOST + `/api/comment/delete/${id}`);
+    return response.data;
+  } catch (e) {
+    throw e;
+  }
+}
+
 async function deletePost(id) {
   const response = await axios.delete(API_HOST + `/api/post/delete/${id}`);
   return response.data;
@@ -188,7 +205,6 @@ async function editPost(id, post) {
   } catch (e) {
     throw e;
   }
-
 }
 
 // --- Reactions ---------------------------------------------------------------------------------------
@@ -289,7 +305,9 @@ export {
   getFollowings,
   createComment,
   getComments,
+  updateComment,
   editPost,
+  deleteComment,
   deletePost,
   loadUserPosts,
   createReaction,

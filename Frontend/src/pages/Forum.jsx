@@ -49,6 +49,8 @@ import {
   deletePost,
   editPost,
   createComment,
+  updateComment,
+  deleteComment,
   createReaction,
   getPostReactions,
   getCommentReactions,
@@ -67,6 +69,7 @@ function Forum(props) {
   const editContent = useRef("");
   const [posts, setPosts] = useState([]); // Used to set the list of post from API
   const [comments, setComments] = useState([]);
+  const [editComment, setEditComment] = useState("");
   const [image, setImage] = useState(null);
   const [selectedPost, setSelectedPost] = useState(null);
 
@@ -79,6 +82,103 @@ function Forum(props) {
     }
     loadPosts();
   }, []);
+
+  async function onDeleteComment(id) {
+    await deleteComment(id.id)
+      .then((res) => {
+        toast({
+          title: "Success",
+          description: res.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      })
+      .catch((error) => {
+        toast({
+          title: "Error",
+          description: error.response.data.error,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      });
+
+    const getNewPosts = await getPosts();
+    setPosts(getNewPosts);
+  }
+  async function onEditComment(id) {
+    const updated = new Date();
+
+    if (editComment.replace(/<(.|\n)*?>/g, "").trim().length === 0) {
+      toast({
+        title: "Error",
+        description: "Field must not be blank.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+    if (editComment.length > 800) {
+      toast({
+        title: "Error",
+        description: "800 word limit exceeded",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    const newComment = {
+      content: editComment,
+      updatedAt: updated,
+    };
+
+    await updateComment(id, newComment)
+      .then((res) => {
+        toast({
+          title: "Success",
+          description: res.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+        return;
+      })
+      .catch((error) => {
+        toast({
+          title: "Error",
+          description: error.response.data.error,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+        return;
+      });
+  }
+  function EditableControls(id) {
+    const { isEditing, getSubmitButtonProps, getCancelButtonProps, getEditButtonProps } = useEditableControls();
+    return isEditing ? (
+      <ButtonGroup justifyContent="center" size="sm">
+        <IconButton icon={<CheckIcon />} {...getSubmitButtonProps()} />
+        <IconButton icon={<CloseIcon />} {...getCancelButtonProps()} />
+      </ButtonGroup>
+    ) : (
+      <Menu>
+        <MenuButton as={IconButton} aria-label="Options" icon={<ChevronDownIcon />} variant="ghost" size="xs" />
+        <MenuList>
+          <MenuItem onClick={() => {}} icon={<EditIcon />} {...getEditButtonProps()}>
+            Edit
+          </MenuItem>
+          <MenuItem onClick={() => onDeleteComment(id)} icon={<DeleteIcon />}>
+            Delete
+          </MenuItem>
+        </MenuList>
+      </Menu>
+    );
+  }
 
   async function newReaction(post_id, emoji) {
     const reaction = {
@@ -171,7 +271,6 @@ function Forum(props) {
       createdAt: created,
     };
 
-
     const newComment = await createComment(comment);
     const newPost = await getPosts();
     setPosts(newPost);
@@ -256,7 +355,6 @@ function Forum(props) {
     }
     if (image !== null) {
       const link = await axios.post(API, formData);
-      console.log(link.data.secure_url);
 
       post = {
         parent_id: props.user._id,
@@ -265,7 +363,6 @@ function Forum(props) {
         link: link.data.secure_url,
         createdAt: created,
         updatedAt: null,
-
       };
     } else {
       post = {
@@ -425,106 +522,55 @@ function Forum(props) {
                         </MenuList>
                       </Menu>
                     )}
-
-                    {/* <Popover placement="top-start" matchWidth>
-                      <PopoverTrigger>
-                        <FacebookCounter counters={post.counter} user={props.user.email} />
-                      </PopoverTrigger>
-                      <PopoverContent borderWidth={0}>
-                        <FacebookSelector onSelect={(label) => newReaction(post.post_id, label)} />
-                      </PopoverContent>
-                    </Popover> */}
                   </Flex>
 
                   <div style={{ paddingTop: "5px" }} dangerouslySetInnerHTML={{ __html: post.content }} />
                   <Spacer />
                 </Box>
-                {/* <Editable
-                  isPreviewFocusable={false}
-                  onSubmit={() => {
-                    onEdit(post.post_id);
-                  }}
-                >
-                  {post.link !== "" ? (
-                    <>
-                      <div className="image-preview">
-                        <img src={post.link} alt="preview" height={200} width={400} />
-                      </div>
-                    </>
-                  ) : (
-                    <></>
-                  )}
-                </Editable> */}
-                {post.comments !== null &&
-                  post.comments.map(
-                    (comment) =>
-                      <Box rounded={"lg"} mt={3} ml={3} width={"100%"}>
-                        <Flex width={"100%"} justifyContent={"space-between"}>
-                          <Flex>
-                            <Box pt={2} pb={2}>
-                              <Avatar bg="teal.500" size={"md"} />
-                            </Box>
-                            <Box p={3}>
-                              <HStack spacing="24px">
-                                <Heading size="sm">{comment.username}</Heading>
-                                <Text color={"gray.500"} fontSize={"xs"}>
-                                  {" "}
-                                  Posted On{" "}
-                                  {Intl.DateTimeFormat("en-GB", {
-                                    weekday: "short",
-                                    month: "short",
-                                    day: "numeric",
-                                    year: "numeric",
-                                  }).format(new Date(comment.createdAt))}
-                                </Text>
-                              </HStack>
-                              {/* <div
-                                dangerouslySetInnerHTML={{
-                                  __html: comment.content,
-                                }}
-                              /> */}
-                              <Editable defaultValue={comment.content} isPreviewFocusable={true}>
-                                <EditablePreview />
-                                <EditableTextarea width={"100%"} />
+                <Box mt={4}>
+                  {post.comments !== null &&
+                    post.comments.map((comment) => (
+                      <Box px={3} mt={1}>
+                        <HStack spacing={2} direction="row">
+                          <Box pt={2} pb={2}>
+                            <Avatar bg="teal.500" size={"md"} />
+                          </Box>
+                          <Box p={3} flex="1">
+                            <HStack spacing="24px">
+                              <Heading size="sm">{comment.username}</Heading>
+                              <Text color={"gray.500"} fontSize={"xs"}>
+                                {" "}
+                                Posted On{" "}
+                                {Intl.DateTimeFormat("en-GB", {
+                                  weekday: "short",
+                                  month: "short",
+                                  day: "numeric",
+                                  year: "numeric",
+                                }).format(new Date(comment.createdAt))}
+                              </Text>
+                            </HStack>
+
+                            <FormControl marginTop={0}>
+                              <Editable
+                                defaultValue={comment.content}
+                                isPreviewFocusable={false}
+                                onSubmit={() => onEditComment(comment._id)}
+                                onChange={(newValue) => setEditComment(newValue)}
+                              >
+                                <HStack justifyContent={"space-between"}>
+                                  <EditablePreview />
+                                  {/* Here is the custom input */}
+                                  <Input as={EditableInput} />
+                                  <EditableControls id={comment._id} />
+                                </HStack>
                               </Editable>
-                            </Box>
-                          </Flex>
-
-                          {props.user._id === comment.user_id && (
-                            <Menu>
-                              <MenuButton as={IconButton} aria-label="Options" icon={<ChevronDownIcon />} variant="outline" />
-                              <MenuList>
-                                <MenuItem
-                                  onClick={() => {
-                                  }}
-                                  icon={<EditIcon />}
-                                >
-                                  Edit
-                                </MenuItem>
-                                <MenuItem onClick={() => onDelete(post._id)} icon={<DeleteIcon />}>
-                                  Delete
-                                </MenuItem>
-                              </MenuList>
-                            </Menu>
-                          )}
-
-
-
-                          {/* <Box mt={7}>
-                            <Popover placement="top-start" matchWidth>
-                              <PopoverTrigger>
-                                <FacebookCounter counters={comment.counter} user={props.user.email} />
-                              </PopoverTrigger>
-                              <PopoverContent borderWidth={0}>
-                                <FacebookSelector onSelect={(label) => newReactionComment(comment.post_id, label)} />
-                              </PopoverContent>
-                            </Popover>
-                          </Box> */}
-                        </Flex>
+                            </FormControl>
+                          </Box>
+                        </HStack>
                       </Box>
-                  )
-                }
-                <Box p={3} rounded={"lg"} mt={3}>
+                    ))}
+                </Box>
+                <Box p={3} mt={1}>
                   <HStack spacing={2} direction="row">
                     <Box pt={2} pb={2}>
                       <Avatar bg="teal.500" size={"md"} />
