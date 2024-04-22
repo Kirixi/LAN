@@ -13,16 +13,22 @@ const userSchema = new Schema<User>({
 const postSchema = new Schema<Post>({
   content: { type: String, required: true },
   link: { type: String, required: false },
+  username: { type: String, required: true },
   parent_id: { type: String, required: true },
   createdAt: { type: Date, required: true },
+  updatedAt: { type: Date, required: false },
+  comments: {type: [Object], required: true},
+  deleted: { type: Boolean, required: true },
 });
 
 const commentSchema = new Schema<Comment>({
-  userEmail: { type: String, required: true },
+  username: { type: String, required: true },
+  user_id: { type: String, required: true },
   content: { type: String, required: true },
-  link: { type: String, required: false },
   createdAt: { type: Date, required: true },
-  parentId: { type: String, required: true },
+  updatedAt: { type: Date, required: true },
+  parent_id: { type: String, required: true },
+  deleted: { type: Boolean, required: true },
 });
 
 //Exports the model with a singleton pattern

@@ -11,13 +11,19 @@ export interface Post extends WithId<Document> {
   content: string;
   link: string | null;
   parent_id: string;
+  username: string;
   createdAt: Date;
+  updatedAt: Date;
+  comments: Object[],
+  deleted: boolean;
 }
 
 export interface Comment extends WithId<Document> {
-  userEmail: string;
+  username: string;
   content: string;
-  link: string | null;
+  user_id: string;
   createdAt: Date;
-  parentId: string;
+  updatedAt: Date;
+  parent_id: string;
+  deleted: boolean;
 }

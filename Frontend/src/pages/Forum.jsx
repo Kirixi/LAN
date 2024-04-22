@@ -30,6 +30,10 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  EditableInput,
+  EditablePreview,
+  useEditableControls,
+  EditableTextarea,
 } from "@chakra-ui/react";
 
 import axios from "axios";
@@ -71,13 +75,10 @@ function Forum(props) {
   useEffect(() => {
     async function loadPosts() {
       const postData = await getPosts();
-      // const commentData = await getCommentReactions();
-      // await getPostReactions();
       setPosts(postData);
-      // setComments(commentData);
     }
     loadPosts();
-  }, [setPosts]);
+  }, []);
 
   async function newReaction(post_id, emoji) {
     const reaction = {
@@ -161,15 +162,19 @@ function Forum(props) {
   //Fetch all the posts made by all the users
 
   const onComment = async (e, post) => {
+    const created = new Date();
     const comment = {
       content: e.target.value,
-      userEmail: post.userEmail,
-      parent_id: post.post_id,
+      username: props.user.username,
+      user_id: props.user._id,
+      parent_id: post._id,
+      createdAt: created,
     };
 
+
     const newComment = await createComment(comment);
-    newComment.name = props.user.name;
-    setComments([...comments, newComment]);
+    const newPost = await getPosts();
+    setPosts(newPost);
     e.target.value = "";
   };
 
@@ -256,15 +261,20 @@ function Forum(props) {
       post = {
         parent_id: props.user._id,
         content: content,
+        username: props.user.username,
         link: link.data.secure_url,
         createdAt: created,
+        updatedAt: null,
+
       };
     } else {
       post = {
         parent_id: props.user._id,
         content: content,
+        username: props.user.username,
         link: "",
         createdAt: created,
+        updatedAt: null,
       };
     }
     onToggle();
@@ -382,7 +392,7 @@ function Forum(props) {
                         <Avatar bg="teal.500" size={"md"} />
                       </Box>
                       <Box p={3}>
-                        <Heading size="sm">{post.name}</Heading>
+                        <Heading size="sm">{post.username}</Heading>
                         <Text color={"gray.500"} fontSize={"xs"}>
                           {" "}
                           Posted On{" "}
@@ -429,7 +439,7 @@ function Forum(props) {
                   <div style={{ paddingTop: "5px" }} dangerouslySetInnerHTML={{ __html: post.content }} />
                   <Spacer />
                 </Box>
-                <Editable
+                {/* <Editable
                   isPreviewFocusable={false}
                   onSubmit={() => {
                     onEdit(post.post_id);
@@ -444,19 +454,19 @@ function Forum(props) {
                   ) : (
                     <></>
                   )}
-                </Editable>
-                {comments !== null &&
-                  comments.map(
+                </Editable> */}
+                {post.comments !== null &&
+                  post.comments.map(
                     (comment) =>
-                      comment.parent_id === post.post_id && (
-                        <Box rounded={"lg"} mt={3}>
+                      <Box rounded={"lg"} mt={3} ml={3} width={"100%"}>
+                        <Flex width={"100%"} justifyContent={"space-between"}>
                           <Flex>
                             <Box pt={2} pb={2}>
                               <Avatar bg="teal.500" size={"md"} />
                             </Box>
                             <Box p={3}>
                               <HStack spacing="24px">
-                                <Heading size="sm">{comment.name}</Heading>
+                                <Heading size="sm">{comment.username}</Heading>
                                 <Text color={"gray.500"} fontSize={"xs"}>
                                   {" "}
                                   Posted On{" "}
@@ -468,28 +478,52 @@ function Forum(props) {
                                   }).format(new Date(comment.createdAt))}
                                 </Text>
                               </HStack>
-                              <div
+                              {/* <div
                                 dangerouslySetInnerHTML={{
                                   __html: comment.content,
                                 }}
-                              />
-                            </Box>
-                            <Spacer />
-
-                            <Box mt={7}>
-                              <Popover placement="top-start" matchWidth>
-                                <PopoverTrigger>
-                                  <FacebookCounter counters={comment.counter} user={props.user.email} />
-                                </PopoverTrigger>
-                                <PopoverContent borderWidth={0}>
-                                  <FacebookSelector onSelect={(label) => newReactionComment(comment.post_id, label)} />
-                                </PopoverContent>
-                              </Popover>
+                              /> */}
+                              <Editable defaultValue={comment.content} isPreviewFocusable={true}>
+                                <EditablePreview />
+                                <EditableTextarea width={"100%"} />
+                              </Editable>
                             </Box>
                           </Flex>
-                        </Box>
-                      )
-                  )}
+
+                          {props.user._id === comment.user_id && (
+                            <Menu>
+                              <MenuButton as={IconButton} aria-label="Options" icon={<ChevronDownIcon />} variant="outline" />
+                              <MenuList>
+                                <MenuItem
+                                  onClick={() => {
+                                  }}
+                                  icon={<EditIcon />}
+                                >
+                                  Edit
+                                </MenuItem>
+                                <MenuItem onClick={() => onDelete(post._id)} icon={<DeleteIcon />}>
+                                  Delete
+                                </MenuItem>
+                              </MenuList>
+                            </Menu>
+                          )}
+
+
+
+                          {/* <Box mt={7}>
+                            <Popover placement="top-start" matchWidth>
+                              <PopoverTrigger>
+                                <FacebookCounter counters={comment.counter} user={props.user.email} />
+                              </PopoverTrigger>
+                              <PopoverContent borderWidth={0}>
+                                <FacebookSelector onSelect={(label) => newReactionComment(comment.post_id, label)} />
+                              </PopoverContent>
+                            </Popover>
+                          </Box> */}
+                        </Flex>
+                      </Box>
+                  )
+                }
                 <Box p={3} rounded={"lg"} mt={3}>
                   <HStack spacing={2} direction="row">
                     <Box pt={2} pb={2}>

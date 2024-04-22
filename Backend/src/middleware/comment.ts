@@ -6,20 +6,22 @@ import mongoose from "mongoose";
 const createComment = async (req: Request, res: Response) => {
 
     try {
-
-        const comment = new CommentModel({
+        const comment = new CommentModel<Comment>({
             _id: new mongoose.Types.ObjectId(),
-            userEmail: req.body.email,
+            username: req.body.username,
+            user_id: req.body.user_id,
             content: req.body.content,
-            link: req.body.link,
             createdAt: req.body.createdAt,
-            parentId: req.body.parentId
+            updatedAt: new Date(0),
+            parent_id: req.body.parent_id,
+            deleted: false,
         })
 
         const response = await comment.save();
 
         return res.status(200).json({ data: response })
     } catch (e: any) {
+        console.log(e.message)
         return res.status(401).json({ message: e.message })
     }
 

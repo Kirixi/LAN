@@ -260,7 +260,7 @@ function Profile(props) {
             <Heading>Comments</Heading>
           </Box>
           {posts.map((post) => (
-            <Comment key={post.post_id} name={post.name} content={post.content} time={post.createdAt} link={post.link} />
+            <Comment key={post.post_id} name={post.username} content={post.content} time={post.createdAt} link={post.link} />
           ))}
         </Stack>
         <Stack pt={70} pl={70}>

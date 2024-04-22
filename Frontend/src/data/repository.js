@@ -55,18 +55,14 @@ async function deleteUser(email) {
 
 // --- Post ---------------------------------------------------------------------------------------
 async function getPosts() {
-  const posts = await axios.get(API_HOST + "/api/post/all");
-  const users = await axios.get(API_HOST + "/api/user/all");
-
-  for (let i = 0; i < posts.data.length; i++) {
-    for (let j = 0; j < users.data.length; j++) {
-      if (users.data[j]._id === posts.data[i].parent_id) {
-        posts.data[i].name = users.data[j].username;
-      }
-    }
+  try {
+    const posts = await axios.get(API_HOST + "/api/post/all");
+    console.log(posts);
+    return posts.data;
+  } catch (e) {
+    throw e;
   }
 
-  return posts.data;
 }
 
 async function loadUserPosts(id) {
@@ -98,8 +94,13 @@ async function getComments() {
 }
 
 async function createComment(comment) {
-  const response = await axios.post(API_HOST + "/api/post/createCom", comment);
-  return response.data;
+  try {
+    const response = await axios.post(API_HOST + "/api/comment/create", comment);
+    return response.data;
+  } catch (e) {
+    throw e;
+  }
+
 }
 async function deletePost(id) {
   const response = await axios.delete(API_HOST + `/api/post/delete/${id}`);
