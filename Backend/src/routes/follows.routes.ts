@@ -5,9 +5,10 @@ const router = express.Router();
 
 router.post("/create", follows.createFollower);
 
-router.get("/getFollowing", follows.getFollowing);
-router.get("/getFollowers", follows.getFollowers);
+router.get("/getFollowing/:id", follows.getFollowing);
+router.get("/getFollowers/:id", follows.getFollowers);
+router.get("/unfollowAccounts/:id", follows.getUnfollowAccounts);
 
-router.delete("/unfollow", follows.unfollow);
+router.delete("/unfollow/:id", follows.unfollow);
 
 export default router;
