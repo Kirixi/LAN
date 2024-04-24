@@ -1,49 +1,87 @@
-import { Box, Heading, Avatar, Flex, Text, Button, SimpleGrid } from "@chakra-ui/react";
+import { Box, Heading, Avatar, Flex, Text, Button, SimpleGrid, useToast } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { loadUsersWithFollowers, createFollow, deleteFollow } from "../data/repository";
 
 function Users(props) {
   const [users, setUsers] = useState([]);
+  const toast = useToast();
 
   useEffect(() => {
     async function loadUsers() {
       const userData = await loadUsersWithFollowers(props.user._id);
+      console.log(userData);
       setUsers(userData);
     }
     loadUsers();
   }, [props.user]);
 
-  async function followUnfollow(isFollowing, followID, follower_email, index) {
-    if (isFollowing) {
-      let user = users;
-      user[index].following = false;
-      setUsers([...user]);
-      await deleteFollow(followID);
-    } else {
-      let user = users;
-      user[index].following = true;
-      setUsers([...user]);
-      await createFollow({
-        user_email: props.user.email,
-        follower_email: follower_email,
+  async function follow(follower_id, index) {
+    let user = users;
+
+    user[index].following = true;
+
+    await createFollow({
+      user_id: follower_id,
+      follower_id: props.user._id,
+      username: props.user.username,
+    })
+      .then((res) => {
+        toast({
+          title: "Success",
+          description: res.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+        console.log(res);
+        user[index].follow_id = res.data._id;
+      })
+      .catch((error) => {
+        toast({
+          title: "Error",
+          description: error.response.data.error,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       });
-    }
+    setUsers([...user]);
   }
 
-  function FollowButton({ isFollowing, followID, follower_email, index }) {
+  async function unfollow(followID, index) {
+    let user = users;
+    user[index].following = false;
+    setUsers([...user]);
+    await deleteFollow(followID)
+      .then((res) => {
+        toast({
+          title: "Success",
+          description: res.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      })
+      .catch((error) => {
+        toast({
+          title: "Error",
+          description: error.response.data.error,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      });
+  }
+
+  function FollowButton({ isFollowing, followID, follower_id, index }) {
     return (
-      <Box pr={5}>
+      <Box>
         {isFollowing ? (
-          <Button
-            colorScheme="teal"
-            variant="solid"
-            textAlign={"center"}
-            onClick={() => followUnfollow(isFollowing, followID, follower_email, index)}
-          >
+          <Button colorScheme="teal" variant="solid" textAlign={"center"} onClick={() => unfollow(followID, index)}>
             Following
           </Button>
         ) : (
-          <Button variant="outline" textAlign={"center"} onClick={() => followUnfollow(isFollowing, followID, follower_email, index)}>
+          <Button variant="outline" textAlign={"center"} onClick={() => follow(follower_id, index)}>
             Follow
           </Button>
         )}
@@ -72,7 +110,7 @@ function Users(props) {
                   </Text>
                 </Box>
                 <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                  <FollowButton isFollowing={user.following} followID={user.follow_id} follower_email={user.email} index={index} />
+                  <FollowButton isFollowing={user.following} followID={user.follow_id} follower_id={user._id} index={index} />
                 </div>
               </Flex>
             </Box>

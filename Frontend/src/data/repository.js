@@ -78,6 +78,15 @@ async function createPost(post) {
   }
 }
 
+async function editPost(id, post) {
+  try {
+    const response = await axios.put(API_HOST + `/api/post/update/${id}`, post);
+    return response.data;
+  } catch (e) {
+    throw e;
+  }
+}
+
 async function getComments() {
   const comments = await axios.get(API_HOST + "/api/post/getComments");
   const users = await axios.get(API_HOST + "/api/users");
@@ -152,9 +161,19 @@ async function getFollowings(user) {
 }
 
 async function loadUsersWithFollowers(id) {
-  // const response = await axios.get(API_HOST + "/api/user/all");
-  const response = await axios.get(API_HOST + `/api/follows/unfollowAccounts/${id}`);
-  return response.data;
+  try {
+    const response = await axios.get(API_HOST + `/api/follows/unfollowAccounts/${id}`);
+    const users = response.data.map((user) => {
+      return {
+        ...user,
+        following: false,
+        follow_id: "",
+      };
+    });
+    return users;
+  } catch (e) {
+    throw e;
+  }
 }
 
 async function isFollowing(user_email, follower_email) {
@@ -171,22 +190,13 @@ async function isFollowing(user_email, follower_email) {
 }
 
 async function createFollow(follow) {
-  const response = await axios.post(API_HOST + "/api/follows/follow", follow);
+  const response = await axios.post(API_HOST + "/api/follows/create", follow);
   return response.data;
 }
 
 async function deleteFollow(id) {
   const response = await axios.delete(API_HOST + `/api/follows/unfollow/${id}`);
   return response.data;
-}
-
-async function editPost(id, post) {
-  try {
-    const response = await axios.put(API_HOST + `/api/post/update/${id}`, post);
-    return response.data;
-  } catch (e) {
-    throw e;
-  }
 }
 
 // --- Reactions ---------------------------------------------------------------------------------------

@@ -16,7 +16,7 @@ const createFollower = async (req: Request, res: Response) => {
 
         const response = await follower.save();
 
-        return res.status(200).json({ data: response })
+        return res.status(200).json({ message: "User followed!" , data: response })
 
     } catch (e: any) {
         return res.status(401).json({ message: e.message })
@@ -59,7 +59,6 @@ const getFollowing = async (req: Request, res: Response) => {
         return res.status(200).json(response);
     } catch (e: any){
         console.log(e.message)
-
         return res.status(400).json({ message: e.message })
     }
 }
@@ -69,7 +68,7 @@ const unfollow = async (req: Request, res: Response) => {
         const response = await FollowModel.deleteOne({ _id: req.params.id })
         return res.status(200).json(response);
     } catch (e: any) {
-        return res.status(400).json({ message: e.message })
+        return res.status(400).json({  message: "User unfollowed!" })
     }
 }
 
