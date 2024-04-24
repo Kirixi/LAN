@@ -20,9 +20,9 @@ function UserDisplay({ name, email, id, user, currentUser }) {
       <Box pt={3} align={"center"}>
         <Avatar bg="teal.500" size={"md"} />
       </Box>
-      <Box p={3}>
+      <Box>
         <Link onClick={generateLink}>
-          <Heading size="sm">{name}</Heading>
+          {/* <Heading size="sm">{name}</Heading> */}
           <Text color={"gray.500"} fontSize={"xs"}>
             {" "}
             {email}
@@ -30,13 +30,7 @@ function UserDisplay({ name, email, id, user, currentUser }) {
         </Link>
       </Box>
       {user === currentUser ? (
-        <Button
-          colorScheme="teal"
-          variant="solid"
-          textAlign={"center"}
-          size={"sm"}
-          onClick={() => unfollow.apply()}
-        >
+        <Button colorScheme="teal" variant="solid" textAlign={"center"} size={"sm"} onClick={() => unfollow.apply()}>
           Unfollow
         </Button>
       ) : (

@@ -55,7 +55,7 @@ const getUnfollowAccounts = async (req: Request, res: Response) => {
 
 const getFollowing = async (req: Request, res: Response) => {
     try {
-        const response = await FollowModel.find({ follower_id: req.params.id });
+        const response = await FollowModel.find({ follower_id: req.params.id }).limit(10);
         return res.status(200).json(response);
     } catch (e: any){
         console.log(e.message)

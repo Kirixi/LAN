@@ -59,9 +59,8 @@ function Profile(props) {
     () => {
       async function loadUser() {
         const currentUser = await findUser(id);
-        // const follows = await getFollowings(id);
+        const follows = await getFollowings(id);
         const postObj = await loadUserPosts(id);
-        console.log(postObj)
         setPosts(postObj.data);
         setFollows(follows);
         setUserName(currentUser.username);
@@ -264,13 +263,11 @@ function Profile(props) {
           ))}
         </Stack>
         <Stack pt={70} pl={70}>
-          <Heading size="md" ml={3}>
-            Following
-          </Heading>
+          <Heading size="md">Following</Heading>
 
-          <Grid templateColumns="repeat(3, 1fr)" gap={3}>
+          <Grid templateColumns="repeat(4, 1fr)" gap={3}>
             {follows.map((follow, index) => (
-              <UserDisplay id={follow.follow_id} name={follow.name} email={follow.email} user={id} currentUser={props.user.email} />
+              <UserDisplay id={follow._id} user={id} currentUser={props.user_id} />
             ))}
           </Grid>
         </Stack>

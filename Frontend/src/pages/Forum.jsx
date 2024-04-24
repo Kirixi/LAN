@@ -23,9 +23,6 @@ import {
   ModalBody,
   HStack,
   ModalCloseButton,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
   Menu,
   MenuButton,
   MenuList,
@@ -33,7 +30,6 @@ import {
   EditableInput,
   EditablePreview,
   useEditableControls,
-  EditableTextarea,
 } from "@chakra-ui/react";
 
 import axios from "axios";
@@ -43,22 +39,11 @@ import "react-quill/dist/quill.snow.css";
 
 import { DeleteIcon, EditIcon, CheckIcon, CloseIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import React, { useEffect, useRef } from "react";
-import {
-  getPosts,
-  createPost,
-  deletePost,
-  editPost,
-  createComment,
-  updateComment,
-  deleteComment,
-  createReaction,
-  getPostReactions,
-  getCommentReactions,
-} from "../data/repository";
+import { getPosts, createPost, deletePost, editPost, createComment, updateComment, deleteComment } from "../data/repository";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-import { FacebookCounter, FacebookSelector } from "@charkour/react-reactions";
+import { Link } from "react-router-dom";
 
 function Forum(props) {
   const toast = useToast();
@@ -178,38 +163,6 @@ function Forum(props) {
         </MenuList>
       </Menu>
     );
-  }
-
-  async function newReaction(post_id, emoji) {
-    const reaction = {
-      user_email: props.user.email,
-      post_id: post_id,
-      reaction: emoji,
-    };
-    let updatePost = posts;
-    for (const p of updatePost) {
-      if (p.post_id === post_id) {
-        p.counter.push({ emoji: emoji, by: props.user.name });
-      }
-    }
-    setPosts([...updatePost]);
-    await createReaction(reaction);
-  }
-
-  async function newReactionComment(post_id, emoji) {
-    const reaction = {
-      user_email: props.user.email,
-      post_id: post_id,
-      reaction: emoji,
-    };
-    let updateComment = comments;
-    for (const p of updateComment) {
-      if (p.post_id === post_id) {
-        p.counter.push({ emoji: emoji, by: props.user.name });
-      }
-    }
-    setComments([...updateComment]);
-    await createReaction(reaction);
   }
 
   function ModalComponent() {
@@ -486,10 +439,16 @@ function Forum(props) {
                   <Flex justifyContent={"space-between"}>
                     <Flex>
                       <Box pt={2} pb={2}>
-                        <Avatar bg="teal.500" size={"md"} />
+                        <Link to={`/profile/${post.parent_id}`}>
+                          <Avatar bg="teal.500" size={"md"} />
+                        </Link>
                       </Box>
                       <Box p={3}>
-                        <Heading size="sm">{post.username}</Heading>
+                        <Link to={`/profile/${post.parent_id}`}>
+                          <Button variant="link">
+                            <Heading size="sm">{post.username}</Heading>
+                          </Button>
+                        </Link>
                         <Text color={"gray.500"} fontSize={"xs"}>
                           {" "}
                           Posted On{" "}

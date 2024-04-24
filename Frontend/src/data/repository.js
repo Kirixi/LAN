@@ -139,25 +139,14 @@ async function getUserFollows(user) {
   return response.data;
 }
 
-async function getFollowings(user) {
-  const follows = await getUserFollows(user);
-  const users = await axios.get(API_HOST + "/api/users");
-  let following = [];
-
-  for (const follow of follows) {
-    for (const user of users.data) {
-      if (user.email === follow.follower_email) {
-        let u = {
-          email: user.email,
-          name: user.name,
-          following: true,
-          follow_id: follow.id,
-        };
-        following.push(u);
-      }
-    }
+async function getFollowings(id) {
+  try {
+    const response = await axios.get(API_HOST + `/api/follows/getFollowing/${id}`);
+    console.log(response.data);
+    return response.data;
+  } catch (e) {
+    throw e;
   }
-  return following;
 }
 
 async function loadUsersWithFollowers(id) {
