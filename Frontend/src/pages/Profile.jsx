@@ -27,6 +27,7 @@ import {
   Progress,
   Flex,
   Heading,
+  useToast,
   Grid,
 } from "@chakra-ui/react";
 import { Formik } from "formik";
@@ -34,7 +35,17 @@ import * as Yup from "yup";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import EditableControls from "./EditableControls";
-import { findUser, updateName, updateEmail, deleteUser, getFollowings, loadUserPosts } from "../data/repository";
+import {
+  findUser,
+  updateName,
+  updateEmail,
+  deleteUser,
+  getFollowings,
+  loadUserPosts,
+  isFollowingUser,
+  createFollow,
+  deleteFollow,
+} from "../data/repository";
 import UserDisplay from "./UserDisplay";
 import Comment from "./Comment";
 
@@ -42,7 +53,6 @@ function Profile(props) {
   const { id } = useParams();
 
   const navigate = useNavigate();
-  // const user = getCurrentUser();
   const [isLoading, setIsLoading] = useState(true);
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
@@ -53,11 +63,20 @@ function Profile(props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [follows, setFollows] = useState([]);
   const [posts, setPosts] = useState([]);
+  const [isFollowing, setIsFollowing] = useState(null);
+  const [followID, setFollowID] = useState();
   const cancelRef = useRef();
+  const toast = useToast();
 
   useEffect(
     () => {
       async function loadUser() {
+        let following;
+        if (props.user._id !== id) {
+          following = await isFollowingUser(id, props.user._id);
+          setIsFollowing(following.found);
+          setFollowID(following.followID);
+        }
         const currentUser = await findUser(id);
         const follows = await getFollowings(id);
         const postObj = await loadUserPosts(id);
@@ -70,9 +89,13 @@ function Profile(props) {
       }
       loadUser();
     },
-    [id, setFollows],
+    [id, setFollows, props.user],
     [setPosts]
   );
+
+  useEffect(() => {
+    console.log(followID);
+  }, [followID]);
 
   function deleteAccount() {
     setDeletingUser(true);
@@ -83,10 +106,62 @@ function Profile(props) {
     }, 3000);
   }
 
+  async function follow() {
+    await createFollow({
+      user_id: id,
+      follower_id: props.user._id,
+      username: props.user.username,
+    })
+      .then((res) => {
+        setFollowID(res.data._id);
+        toast({
+          title: "Success",
+          description: res.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      })
+      .catch((error) => {
+        toast({
+          title: "Error",
+          description: error.response.data.error,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      });
+    setIsFollowing(!isFollowing);
+  }
+
+  async function unfollow() {
+    await deleteFollow(followID)
+      .then((res) => {
+        toast({
+          title: "Success",
+          description: res.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      })
+      .catch((error) => {
+        toast({
+          title: "Error",
+          description: error.response.data.error,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      });
+    setIsFollowing(!isFollowing);
+    setFollowID("");
+  }
+
   return (
-    <Box pl={20}>
-      <Flex>
-        <Box p={20} minW="500px">
+    <Box>
+      <Flex mt={30} mx={10} justifyContent={"space-around"}>
+        <Box minW="350px">
           {isLoading ? (
             <div>Loading</div>
           ) : (
@@ -96,6 +171,7 @@ function Profile(props) {
               </Box>
               <Stack spacing={5} p={10} divider={<StackDivider borderColor="gray.200" />}>
                 <Formik
+                  enableReinitialize
                   initialValues={{ name: userName }}
                   validationSchema={Yup.object({
                     name: Yup.string().required("Name cannot be empty"),
@@ -128,7 +204,7 @@ function Profile(props) {
                           >
                             <EditablePreview />
                             <Input name="name" as={EditableInput} variant="flushed" size={"xl"} onChange={formik.handleChange} />
-                            {props.user.email === id && <InputRightElement children={<EditableControls />} />}
+                            {props.user._id === id && <InputRightElement children={<EditableControls />} />}
                           </Editable>
                           <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
                         </InputGroup>
@@ -143,6 +219,7 @@ function Profile(props) {
                   )}
                 </Formik>
                 <Formik
+                  enableReinitialize
                   initialValues={{ email: userEmail }}
                   validationSchema={Yup.object({
                     email: Yup.string()
@@ -185,6 +262,7 @@ function Profile(props) {
                           >
                             <EditablePreview />
                             <Input name="email" as={EditableInput} variant="flushed" size={"xl"} onChange={formik.handleChange} />
+                            {props.user._id === id && <InputRightElement children={<EditableControls />} />}
                           </Editable>
                         </InputGroup>
                         <FormErrorMessage>{formik.errors.email}</FormErrorMessage>
@@ -218,8 +296,14 @@ function Profile(props) {
                   <Button colorScheme="red" onClick={onOpen} minW={"100%"}>
                     DELETE ACCOUNT
                   </Button>
+                ) : isFollowing ? (
+                  <Button variant="outline" minW={"100%"} textAlign={"center"} onClick={() => unfollow()}>
+                    Following
+                  </Button>
                 ) : (
-                  <></>
+                  <Button colorScheme="teal" minW={"100%"} variant="solid" textAlign={"center"} onClick={() => follow()}>
+                    Follow
+                  </Button>
                 )}
                 <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
                   <AlertDialogOverlay>
@@ -254,7 +338,7 @@ function Profile(props) {
             </Container>
           )}
         </Box>
-        <Stack minW="40%" pt={70} pb={70}>
+        <Stack minW="40%">
           <Box>
             <Heading>Comments</Heading>
           </Box>
@@ -262,14 +346,24 @@ function Profile(props) {
             <Comment key={post.post_id} name={post.username} content={post.content} time={post.createdAt} link={post.link} />
           ))}
         </Stack>
-        <Stack pt={70} pl={70}>
-          <Heading size="md">Following</Heading>
+        <Stack minW={"220px"} spacing={"100px"}>
+          <Stack>
+            <Heading size="md">Following</Heading>
+            <Grid templateColumns="repeat(4, 1fr)" gap={3}>
+              {follows.map((follow, index) => (
+                <UserDisplay id={follow.user_id} />
+              ))}
+            </Grid>
+          </Stack>
 
-          <Grid templateColumns="repeat(4, 1fr)" gap={3}>
-            {follows.map((follow, index) => (
-              <UserDisplay id={follow._id} user={id} currentUser={props.user_id} />
-            ))}
-          </Grid>
+          <Stack>
+            <Heading size="md">Followers</Heading>
+            <Grid templateColumns="repeat(4, 1fr)" gap={3}>
+              {follows.map((follow, index) => (
+                <UserDisplay id={follow.user_id} />
+              ))}
+            </Grid>
+          </Stack>
         </Stack>
       </Flex>
     </Box>

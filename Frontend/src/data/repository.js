@@ -47,9 +47,8 @@ async function updateEmail(email, newEmail) {
   return response.data;
 }
 
-async function deleteUser(email) {
-  const response = await axios.delete(API_HOST + `/api/user/delete/${email}`);
-
+async function deleteUser(id) {
+  const response = await axios.delete(API_HOST + `/api/user/delete/${id}`);
   return response.data;
 }
 
@@ -142,7 +141,6 @@ async function getUserFollows(user) {
 async function getFollowings(id) {
   try {
     const response = await axios.get(API_HOST + `/api/follows/getFollowing/${id}`);
-    console.log(response.data);
     return response.data;
   } catch (e) {
     throw e;
@@ -165,17 +163,13 @@ async function loadUsersWithFollowers(id) {
   }
 }
 
-async function isFollowing(user_email, follower_email) {
-  let data = null;
-  await axios
-    .get("http://localhost:4000/api/follows/isfollowing", {
-      params: { user_email: "test@mail.com", follower_email: "asd@asd.com" },
-    })
-    .then((response) => {
-      data = response.data;
-    });
-
-  return data;
+async function isFollowingUser(current_id, follower_id) {
+  try {
+    const response = await axios.get(API_HOST + "/api/follows/isFollowing", { params: { follower_id: follower_id, user_id: current_id } });
+    return response.data;
+  } catch (e) {
+    throw e;
+  }
 }
 
 async function createFollow(follow) {
@@ -280,7 +274,7 @@ export {
   updateEmail,
   deleteUser,
   loadUsersWithFollowers,
-  isFollowing,
+  isFollowingUser,
   createFollow,
   deleteFollow,
   getFollowings,

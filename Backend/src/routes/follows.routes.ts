@@ -8,6 +8,7 @@ router.post("/create", follows.createFollower);
 router.get("/getFollowing/:id", follows.getFollowing);
 router.get("/getFollowers/:id", follows.getFollowers);
 router.get("/unfollowAccounts/:id", follows.getUnfollowAccounts);
+router.get("/isFollowing", follows.isFollowing);
 
 router.delete("/unfollow/:id", follows.unfollow);
 
