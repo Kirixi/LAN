@@ -29,6 +29,11 @@ import {
   Heading,
   useToast,
   Grid,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
 } from "@chakra-ui/react";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -339,9 +344,20 @@ function Profile(props) {
           )}
         </Box>
         <Stack minW="40%">
-          <Box>
-            <Heading>Comments</Heading>
-          </Box>
+          <Tabs isFitted size="md" colorScheme="teal">
+            <TabList mb="1em">
+              <Tab>Posts</Tab>
+              <Tab>Comments</Tab>
+            </TabList>
+            <TabPanels>
+              <TabPanel>
+                <p>Posts</p>
+              </TabPanel>
+              <TabPanel>
+                <p>comments</p>
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
           {posts.map((post) => (
             <Comment key={post.post_id} name={post.username} content={post.content} time={post.createdAt} link={post.link} />
           ))}
