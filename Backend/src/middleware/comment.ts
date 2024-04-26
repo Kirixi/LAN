@@ -29,8 +29,8 @@ const createComment = async (req: Request, res: Response) => {
 const getUserComments = async (req: Request, res: Response) => {
 
     try {
-        const response = await CommentModel.find({ userEmail: req.params.email });
-        return res.status(200).json({ data: response })
+        const response = await CommentModel.find({ user_id: req.params.id });
+        return res.status(200).json( response )
     } catch (e: any) {
         return res.status(401).json({ message: e.message })
     }

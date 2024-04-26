@@ -100,6 +100,15 @@ async function getComments() {
   return comments.data;
 }
 
+async function getUserComments(id) {
+  try {
+    const response = await axios.get(API_HOST + `/api/comment/getUserComments/${id}`);
+    return response.data;
+  } catch (e) {
+    throw e;
+  }
+}
+
 async function createComment(comment) {
   try {
     const response = await axios.post(API_HOST + "/api/comment/create", comment);
@@ -133,9 +142,13 @@ async function deletePost(id) {
 }
 
 // --- Follow ---------------------------------------------------------------------------------------
-async function getUserFollows(user) {
-  const response = await axios.get(API_HOST + `/api/follows/getUser/${user}`);
-  return response.data;
+async function getUserFollowers(id) {
+  try {
+    const response = await axios.get(API_HOST + `/api/follows/getFollowers/${id}`);
+    return response.data;
+  } catch (e) {
+    throw e;
+  }
 }
 
 async function getFollowings(id) {
@@ -277,10 +290,12 @@ export {
   isFollowingUser,
   createFollow,
   deleteFollow,
+  getUserFollowers,
   getFollowings,
   createComment,
   getComments,
   updateComment,
+  getUserComments,
   editPost,
   deleteComment,
   deletePost,

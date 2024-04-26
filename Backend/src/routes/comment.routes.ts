@@ -6,7 +6,7 @@ const router = express.Router();
 router.post("/create", comment.createComment);
 
 router.get("/getPostComments/:id", comment.getPostComments);
-router.get("/getUserComments/:email", comment.getUserComments);
+router.get("/getUserComments/:id", comment.getUserComments);
 
 router.put("/update/:id", comment.updateComment);
 

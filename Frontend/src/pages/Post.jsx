@@ -1,7 +1,6 @@
 import { Box, Flex, Avatar, Heading, Text } from "@chakra-ui/react";
 
 function Comment({ name, time, content, link }) {
-  // const post = { user: "Me", time: "Time here", value: "soome random post" };
   return (
     <Box>
       <Box p={4} rounded={"lg"} borderWidth={1} mt={3}>

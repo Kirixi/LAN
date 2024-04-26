@@ -47,12 +47,15 @@ import {
   deleteUser,
   getFollowings,
   loadUserPosts,
+  getUserComments,
+  getUserFollowers,
   isFollowingUser,
   createFollow,
   deleteFollow,
 } from "../data/repository";
 import UserDisplay from "./UserDisplay";
-import Comment from "./Comment";
+import Post from "./Post";
+import Comment from "../components/Comment";
 
 function Profile(props) {
   const { id } = useParams();
@@ -70,6 +73,8 @@ function Profile(props) {
   const [posts, setPosts] = useState([]);
   const [isFollowing, setIsFollowing] = useState(null);
   const [followID, setFollowID] = useState();
+  const [comments, setComments] = useState([]);
+  const [followers, setFollowers] = useState([]);
   const cancelRef = useRef();
   const toast = useToast();
 
@@ -84,9 +89,13 @@ function Profile(props) {
         }
         const currentUser = await findUser(id);
         const follows = await getFollowings(id);
+        const followerList = await getUserFollowers(id);
         const postObj = await loadUserPosts(id);
+        const commentList = await getUserComments(id);
+        setComments(commentList);
         setPosts(postObj.data);
         setFollows(follows);
+        setFollowers(followerList.data);
         setUserName(currentUser.username);
         setUserEmail(currentUser.email);
         setUserJoinedOn(currentUser.joined);
@@ -98,9 +107,7 @@ function Profile(props) {
     [setPosts]
   );
 
-  useEffect(() => {
-    console.log(followID);
-  }, [followID]);
+  useEffect(() => {}, [followID]);
 
   function deleteAccount() {
     setDeletingUser(true);
@@ -343,7 +350,7 @@ function Profile(props) {
             </Container>
           )}
         </Box>
-        <Stack minW="40%">
+        <Stack minW="45%">
           <Tabs isFitted size="md" colorScheme="teal">
             <TabList mb="1em">
               <Tab>Posts</Tab>
@@ -351,16 +358,17 @@ function Profile(props) {
             </TabList>
             <TabPanels>
               <TabPanel>
-                <p>Posts</p>
+                {posts.map((post) => (
+                  <Post key={post.post_id} name={post.username} content={post.content} time={post.createdAt} link={post.link} />
+                ))}
               </TabPanel>
               <TabPanel>
-                <p>comments</p>
+                {comments.map((comment) => (
+                  <Comment key={comment._id} username={comment.username} createdAt={comment.createdAt} content={comment.content} />
+                ))}
               </TabPanel>
             </TabPanels>
           </Tabs>
-          {posts.map((post) => (
-            <Comment key={post.post_id} name={post.username} content={post.content} time={post.createdAt} link={post.link} />
-          ))}
         </Stack>
         <Stack minW={"220px"} spacing={"100px"}>
           <Stack>
@@ -375,8 +383,8 @@ function Profile(props) {
           <Stack>
             <Heading size="md">Followers</Heading>
             <Grid templateColumns="repeat(4, 1fr)" gap={3}>
-              {follows.map((follow, index) => (
-                <UserDisplay id={follow.user_id} />
+              {followers.map((follower, index) => (
+                <UserDisplay id={follower.follwer_id} />
               ))}
             </Grid>
           </Stack>
