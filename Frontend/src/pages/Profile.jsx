@@ -34,6 +34,9 @@ import {
   TabPanels,
   Tab,
   TabPanel,
+  Skeleton,
+  SkeletonCircle,
+  SkeletonText,
 } from "@chakra-ui/react";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -358,14 +361,31 @@ function Profile(props) {
             </TabList>
             <TabPanels>
               <TabPanel>
-                {posts.map((post) => (
-                  <Post key={post.post_id} name={post.username} content={post.content} time={post.createdAt} link={post.link} />
-                ))}
+                {isLoading ? (
+                  <Box height={"300px"}>
+                    <SkeletonCircle size="10" />
+                    <SkeletonText mt="4" noOfLines={4} spacing="4" skeletonHeight="2" />
+                  </Box>
+                ) : posts.length > 0 ? (
+                  posts.map((post) => (
+                    <Post key={post.post_id} name={post.username} content={post.content} time={post.createdAt} link={post.link} />
+                  ))
+                ) : (
+                  <Box width={"100%"} height={"300px"} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    <Text fontSize="3xl">No post created yet.</Text>
+                  </Box>
+                )}
               </TabPanel>
               <TabPanel>
-                {comments.map((comment) => (
-                  <Comment key={comment._id} username={comment.username} createdAt={comment.createdAt} content={comment.content} />
-                ))}
+                {comments.length > 0 ? (
+                  comments.map((comment) => (
+                    <Comment key={comment._id} username={comment.username} createdAt={comment.createdAt} content={comment.content} />
+                  ))
+                ) : (
+                  <Box width={"100%"} height={"300px"} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    <Text fontSize="3xl">No comments made yet.</Text>
+                  </Box>
+                )}
               </TabPanel>
             </TabPanels>
           </Tabs>
