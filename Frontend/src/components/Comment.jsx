@@ -5,7 +5,7 @@ export default function Comment({ username, createdAt, content }) {
   return (
     <Box px={3} mt={1}>
       <HStack spacing={2} direction="row">
-        <Box pt={2} pb={2}>
+        <Box pt={2} pb={2} alignSelf={"start"}>
           <Avatar bg="teal.500" size={"md"} />
         </Box>
         <Box p={3} flex="1">

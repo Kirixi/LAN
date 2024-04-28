@@ -53,7 +53,6 @@ function Forum(props) {
   const [content, setContent] = useState(""); // Used to set react quill input
   const editContent = useRef("");
   const [posts, setPosts] = useState([]); // Used to set the list of post from API
-  const [comments, setComments] = useState([]);
   const [editComment, setEditComment] = useState("");
   const [image, setImage] = useState(null);
   const [selectedPost, setSelectedPost] = useState(null);
@@ -154,7 +153,7 @@ function Forum(props) {
       <Menu>
         <MenuButton as={IconButton} aria-label="Options" icon={<ChevronDownIcon />} variant="ghost" size="xs" />
         <MenuList>
-          <MenuItem onClick={() => {}} icon={<EditIcon />} {...getEditButtonProps()}>
+          <MenuItem onClick={() => { }} icon={<EditIcon />} {...getEditButtonProps()}>
             Edit
           </MenuItem>
           <MenuItem onClick={() => onDeleteComment(id)} icon={<DeleteIcon />}>
@@ -224,7 +223,7 @@ function Forum(props) {
       createdAt: created,
     };
 
-    const newComment = await createComment(comment);
+    await createComment(comment);
     const newPost = await getPosts();
     setPosts(newPost);
     e.target.value = "";
@@ -491,7 +490,7 @@ function Forum(props) {
                     post.comments.map((comment) => (
                       <Box px={3} mt={1}>
                         <HStack spacing={2} direction="row">
-                          <Box pt={2} pb={2}>
+                          <Box pt={2} pb={2} alignSelf={"start"}>
                             <Avatar bg="teal.500" size={"md"} />
                           </Box>
                           <Box p={3} flex="1">

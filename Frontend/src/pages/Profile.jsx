@@ -34,7 +34,6 @@ import {
   TabPanels,
   Tab,
   TabPanel,
-  Skeleton,
   SkeletonCircle,
   SkeletonText,
 } from "@chakra-ui/react";
@@ -44,6 +43,7 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import EditableControls from "./EditableControls";
 import {
+  verifyEmail,
   findUser,
   updateName,
   updateEmail,
@@ -173,6 +173,7 @@ function Profile(props) {
     setFollowID("");
   }
 
+
   return (
     <Box>
       <Flex mt={30} mx={10} justifyContent={"space-around"}>
@@ -241,12 +242,8 @@ function Profile(props) {
                       .required("Email cannot be empty")
                       .email("Email must be a valid Email")
                       .test("validateEmail", "This email is already in use", async function () {
-                        const user = await findUser(this.parent.email);
-                        if (user === null) {
-                          return true;
-                        } else {
-                          return false;
-                        }
+                        const user = await verifyEmail(this.parent.email);
+                        return user.data.verified;
                       }),
                   })}
                   onSubmit={async (value) => {

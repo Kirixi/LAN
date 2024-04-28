@@ -36,12 +36,15 @@ async function createUser(user) {
 }
 
 async function updateName(name, email) {
+  console.log(name, email);
   const response = await axios.put(API_HOST + `/api/user/updatename/${email}`, { name: name });
 
   return response.data;
 }
 
 async function updateEmail(email, newEmail) {
+  console.log("console", email, newEmail);
+
   const response = await axios.put(API_HOST + `/api/user/updateEmail/${email}`, { newEmail: newEmail });
 
   return response.data;
