@@ -13,6 +13,7 @@ const createUser = async (req: Request, res: Response) => {
       password: passwordHash,
       username: req.body.username,
       joined: req.body.joined,
+      status: "",
     });
 
     const savedUser = await user.save();
@@ -22,6 +23,7 @@ const createUser = async (req: Request, res: Response) => {
       email: savedUser.email,
       username: savedUser.username,
       joined: savedUser.joined,
+      status: "",
     }
     
 

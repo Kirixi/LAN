@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import { FollowModel, UserModel } from "../db/collections.js";
 import { Response, Request } from "express";
 import { Follows } from "../db/interfaces.js";
-import user from "./user.js";
 
 
 const createFollower = async (req: Request, res: Response) => {
