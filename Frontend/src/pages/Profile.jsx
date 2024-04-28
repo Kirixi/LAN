@@ -110,7 +110,7 @@ function Profile(props) {
     [setPosts]
   );
 
-  useEffect(() => {}, [followID]);
+  useEffect(() => { }, [followID]);
 
   function deleteAccount() {
     setDeletingUser(true);
@@ -353,7 +353,7 @@ function Profile(props) {
             </Container>
           )}
         </Box>
-        <Stack minW="45%">
+        <Stack width={"100%"} maxW={"45%"}>
           <Tabs isFitted size="md" colorScheme="teal">
             <TabList mb="1em">
               <Tab>Posts</Tab>
@@ -382,7 +382,7 @@ function Profile(props) {
                     <Comment key={comment._id} username={comment.username} createdAt={comment.createdAt} content={comment.content} />
                   ))
                 ) : (
-                  <Box width={"100%"} height={"300px"} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                  <Box height={"300px"} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                     <Text fontSize="3xl">No comments made yet.</Text>
                   </Box>
                 )}
