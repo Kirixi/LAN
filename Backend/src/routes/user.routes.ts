@@ -17,6 +17,7 @@ router.get("/verifyEmail/:email", user.verifyEmail);
 
 router.put("/updateName/:id", user.updateUsername);
 router.put("/updateEmail/:id", user.updateEmail);
+router.put("/updateStatus/:id", user.updateStatus);
 
 router.delete("/delete/:id", user.deleteUser);
 

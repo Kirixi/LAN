@@ -63,8 +63,7 @@ const getUsernamebyEmail = async (req: Request, res: Response) => {
     const response = await UserModel.findOne({ email: req.params.email });
     return res.status(200).json(response);
   } catch (e: any) {
-    console.log(e);
-    return e.message;
+    return res.status(401).json({ message: e.message });
   }
 };
 
@@ -73,8 +72,7 @@ const getUserbyUsername = async (req: Request, res: Response) => {
     const response = await UserModel.findOne({ name: req.params.username });
     return res.status(200).json(response);
   } catch (e: any) {
-    console.log(e);
-    return e.message;
+    return res.status(401).json({ message: e.message });
   }
 };
 
@@ -83,7 +81,7 @@ const getAllUsers = async (req: Request, res: Response) => {
     const response = await UserModel.find({}, { password: 0 });
     return res.status(200).json(response);
   } catch (e: any) {
-    console.log(e);
+    return res.status(401).json({ message: e.message });
   }
 };
 
@@ -116,25 +114,33 @@ const updateUsername = async (req: Request, res: Response) => {
     );
     return res.status(200).json(response);
   } catch (e: any) {
-    console.log(e.message);
     return res.status(401).json({ message: e.message });
   }
 };
 
 const updateEmail = async (req: Request, res: Response) => {
   try {
-    if (!req.body.email) {
+    if (!req.body.newEmail) {
       throw new Error("Email is required!");
     }
     const response = await UserModel.updateOne(
       { _id: req.params.id },
-      { $set: { email: req.body.email } }
+      { $set: { email: req.body.newEmail } }
     );
     return res.status(200).json(response);
   } catch (e: any) {
-    return res.status(401).json(e.message);
+    return res.status(401).json({ message: e.message });
   }
 };
+
+const updateStatus = async (req: Request, res: Response) => {
+  try {
+    const response = await UserModel.updateOne( { _id: req.params.id }, { $set: { status: req.body.content } } ); 
+    return res.status(200).json(response);
+  } catch (e: any) {
+    return res.status(401).json({ message: e.message });
+  }
+}
 
 const deleteUser = async (req: Request, res: Response) => {
   try {
@@ -145,6 +151,7 @@ const deleteUser = async (req: Request, res: Response) => {
   }
 };
 
+
 export default {
   createUser,
   getAllUsers,
@@ -154,6 +161,7 @@ export default {
   login,
   updateUsername,
   updateEmail,
+  updateStatus,
   deleteUser,
   verifyEmail,
 };

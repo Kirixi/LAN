@@ -54,6 +54,7 @@ import {
   getUserFollowers,
   isFollowingUser,
   createFollow,
+  updateStatus,
   deleteFollow,
 } from "../data/repository";
 import UserDisplay from "./UserDisplay";
@@ -67,9 +68,11 @@ function Profile(props) {
   const [isLoading, setIsLoading] = useState(true);
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
+  const [userAbout, setUserAbout] = useState("");
   const [userJoinedOn, setUserJoinedOn] = useState("");
   const [alertName, setAlertName] = useState(false); //Visual cues on succesful name change
   const [alertEmail, setAlertEmail] = useState(false); //Visual cues on succesful email change
+  const [alertAbout, setAlertAbout] = useState(false); //Visual cues on succesful about change
   const [isDeletingUser, setDeletingUser] = useState(false); //Whether a user is being deleted
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [follows, setFollows] = useState([]);
@@ -101,6 +104,7 @@ function Profile(props) {
         setFollowers(followerList.data);
         setUserName(currentUser.username);
         setUserEmail(currentUser.email);
+        setUserAbout(currentUser.status);
         setUserJoinedOn(currentUser.joined);
         setIsLoading(false);
       }
@@ -110,7 +114,7 @@ function Profile(props) {
     [setPosts]
   );
 
-  useEffect(() => { }, [followID]);
+  useEffect(() => {}, [followID]);
 
   function deleteAccount() {
     setDeletingUser(true);
@@ -173,7 +177,6 @@ function Profile(props) {
     setFollowID("");
   }
 
-
   return (
     <Box>
       <Flex mt={30} mx={10} justifyContent={"space-around"}>
@@ -185,7 +188,7 @@ function Profile(props) {
               <Box pt={10} align={"center"}>
                 <Avatar bg="teal.500" size={"2xl"} />
               </Box>
-              <Stack spacing={5} p={10} divider={<StackDivider borderColor="gray.200" />}>
+              <Stack width={"100%"} spacing={5} p={10} divider={<StackDivider borderColor="gray.200" />}>
                 <Formik
                   enableReinitialize
                   initialValues={{ name: userName }}
@@ -194,18 +197,28 @@ function Profile(props) {
                   })}
                   onSubmit={async (value) => {
                     if (userName !== value.name) {
-                      await updateName(value.name, userEmail);
-
-                      setAlertName(true);
-                      setUserName(value.name);
-                      setTimeout(() => {
-                        setAlertName(false);
-                      }, 3000);
+                      await updateName(value.name, props.user._id)
+                        .then((res) => {
+                          setAlertName(true);
+                          setUserName(value.name);
+                          setTimeout(() => {
+                            setAlertName(false);
+                          }, 3000);
+                        })
+                        .catch((error) => {
+                          toast({
+                            title: "Error",
+                            description: error.response.data.message,
+                            status: "error",
+                            duration: 5000,
+                            isClosable: true,
+                          });
+                        });
                     }
                   }}
                 >
                   {(formik) => (
-                    <Box>
+                    <Box w={"94%"}>
                       <Text color={"gray.500"} fontSize={"xs"}>
                         NAME
                       </Text>
@@ -234,56 +247,135 @@ function Profile(props) {
                     </Box>
                   )}
                 </Formik>
+                {props.user._id === id && (
+                  <Formik
+                    enableReinitialize
+                    initialValues={{ email: userEmail }}
+                    validationSchema={Yup.object({
+                      email: Yup.string()
+                        .required("Email cannot be empty")
+                        .email("Email must be a valid Email")
+                        .test("validateEmail", "This email is already in use", async function () {
+                          const user = await verifyEmail(this.parent.email);
+                          return user.data.verified;
+                        }),
+                    })}
+                    onSubmit={async (value) => {
+                      if (userEmail !== value.email) {
+                        await updateEmail(props.user._id, value.email)
+                          .then((res) => {
+                            setAlertEmail(true);
+                            setUserEmail(value.email);
+
+                            setTimeout(() => {
+                              setAlertEmail(false);
+                            }, 3000);
+                          })
+                          .catch((error) => {
+                            toast({
+                              title: "Error",
+                              description: error.response.data.message,
+                              status: "error",
+                              duration: 5000,
+                              isClosable: true,
+                            });
+                          });
+                      }
+                    }}
+                  >
+                    {(formik) => (
+                      <Box w={"94%"}>
+                        <Text color={"gray.500"} fontSize={"xs"}>
+                          EMAIL
+                        </Text>
+                        <FormControl isInvalid={formik.errors.email}>
+                          <InputGroup>
+                            <Editable
+                              fontSize={"lg"}
+                              fontWeight={400}
+                              isPreviewFocusable={false}
+                              value={formik.values.email}
+                              onSubmit={formik.handleSubmit}
+                            >
+                              <EditablePreview />
+                              <Input name="email" as={EditableInput} variant="flushed" size={"xl"} onChange={formik.handleChange} />
+                              {props.user._id === id && <InputRightElement children={<EditableControls />} />}
+                            </Editable>
+                          </InputGroup>
+                          <FormErrorMessage>{formik.errors.email}</FormErrorMessage>
+                        </FormControl>
+
+                        <Collapse in={alertEmail} animateOpacity>
+                          <Alert status="success" mt={2}>
+                            <AlertIcon />
+                            Changed Email!
+                          </Alert>
+                        </Collapse>
+                      </Box>
+                    )}
+                  </Formik>
+                )}
+
                 <Formik
                   enableReinitialize
-                  initialValues={{ email: userEmail }}
+                  initialValues={{ about: userAbout }}
                   validationSchema={Yup.object({
-                    email: Yup.string()
-                      .required("Email cannot be empty")
-                      .email("Email must be a valid Email")
-                      .test("validateEmail", "This email is already in use", async function () {
-                        const user = await verifyEmail(this.parent.email);
-                        return user.data.verified;
-                      }),
+                    about: Yup.string().test("lengthTest", "Only 30 words allowed.", async function () {
+                      if (this.parent.about == null) {
+                        return true;
+                      }
+                      if (this.parent.about.length > 180) {
+                        return false;
+                      } else {
+                        return true;
+                      }
+                    }),
                   })}
                   onSubmit={async (value) => {
-                    if (userEmail !== value.email) {
-                      await updateEmail(userEmail, value.email);
-                      setAlertEmail(true);
-                      setUserEmail(value.email);
-
-                      setTimeout(() => {
-                        setAlertEmail(false);
-                      }, 3000);
-                    }
+                    await updateStatus(id, value.about)
+                      .then((res) => {
+                        setAlertAbout(true);
+                        setTimeout(() => {
+                          setAlertAbout(false);
+                        }, 3000);
+                      })
+                      .catch((error) => {
+                        toast({
+                          title: "Error",
+                          description: error.response.data.message,
+                          status: "error",
+                          duration: 5000,
+                          isClosable: true,
+                        });
+                      });
                   }}
                 >
                   {(formik) => (
-                    <Box>
+                    <Box w={"93%"}>
                       <Text color={"gray.500"} fontSize={"xs"}>
-                        EMAIL
+                        ABOUT
                       </Text>
-                      <FormControl isInvalid={formik.errors.email}>
+                      <FormControl isInvalid={formik.errors.about}>
                         <InputGroup>
                           <Editable
                             fontSize={"lg"}
                             fontWeight={400}
                             isPreviewFocusable={false}
-                            value={formik.values.email}
+                            value={formik.values.about}
                             onSubmit={formik.handleSubmit}
                           >
                             <EditablePreview />
-                            <Input name="email" as={EditableInput} variant="flushed" size={"xl"} onChange={formik.handleChange} />
+                            <Input name="about" as={EditableInput} variant="flushed" size={"xl"} onChange={formik.handleChange} />
                             {props.user._id === id && <InputRightElement children={<EditableControls />} />}
                           </Editable>
                         </InputGroup>
-                        <FormErrorMessage>{formik.errors.email}</FormErrorMessage>
+                        <FormErrorMessage>{formik.errors.about}</FormErrorMessage>
                       </FormControl>
 
-                      <Collapse in={alertEmail} animateOpacity>
+                      <Collapse in={alertAbout} animateOpacity>
                         <Alert status="success" mt={2}>
                           <AlertIcon />
-                          Changed Email!
+                          Changed About!
                         </Alert>
                       </Collapse>
                     </Box>

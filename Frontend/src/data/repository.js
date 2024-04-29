@@ -31,23 +31,39 @@ async function findUser(id) {
 }
 
 async function createUser(user) {
-  const response = await axios.post(API_HOST + "/api/user/create", user);
-  return response.data;
+  try {
+    const response = await axios.post(API_HOST + "/api/user/create", user);
+    return response.data;
+  } catch (e) {
+    throw e;
+  }
 }
 
-async function updateName(name, email) {
-  console.log(name, email);
-  const response = await axios.put(API_HOST + `/api/user/updatename/${email}`, { name: name });
-
-  return response.data;
+async function updateName(username, id) {
+  try {
+    const response = await axios.put(API_HOST + `/api/user/updateName/${id}`, { username: username });
+    return response.data;
+  } catch (e) {
+    throw e;
+  }
 }
 
-async function updateEmail(email, newEmail) {
-  console.log("console", email, newEmail);
+async function updateEmail(id, newEmail) {
+  try {
+    const response = await axios.put(API_HOST + `/api/user/updateEmail/${id}`, { newEmail: newEmail });
+    return response.data;
+  } catch (e) {
+    throw e;
+  }
+}
 
-  const response = await axios.put(API_HOST + `/api/user/updateEmail/${email}`, { newEmail: newEmail });
-
-  return response.data;
+async function updateStatus(id, content) {
+  try {
+    const response = await axios.put(API_HOST + `/api/user/updateStatus/${id}`, { content: content });
+    return response.data;
+  } catch (e) {
+    throw e;
+  }
 }
 
 async function deleteUser(id) {
@@ -59,7 +75,6 @@ async function deleteUser(id) {
 async function getPosts() {
   try {
     const posts = await axios.get(API_HOST + "/api/post/all");
-    console.log(posts);
     return posts.data;
   } catch (e) {
     throw e;
@@ -288,6 +303,7 @@ export {
   createPost,
   updateName,
   updateEmail,
+  updateStatus,
   deleteUser,
   loadUsersWithFollowers,
   isFollowingUser,
