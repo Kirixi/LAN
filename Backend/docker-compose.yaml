@@ -1,23 +1,23 @@
 services:
-  webserver1: 
+  webserver1:
     build: .
-    image: lanserver
-    ports: 
+    image: lanserver-stable
+    ports:
       - "8000"
     deploy:
-     replicas: 3 
+      replicas: 2
 
   # Used for testing load balancer.
-  # webserver2: 
+  # webserver2:
   #   build: .
-  #   image: lanserver
-  #   ports: 
+  #   image: lanserver2.2
+  #   ports:
   #     - "8000"
 
-  # webserver3: 
+  # webserver3:
   #   build: .
-  #   image: lanserver
-  #   ports: 
+  #   image: lanserver2.3
+  #   ports:
   #     - "8000"
 
   mongo:
@@ -25,13 +25,13 @@ services:
     ports:
       - "27017:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin 
-      MONGO_INITDB_ROOT_PASSWORD: admin  
-      MONGO_INITDB_DATABASE: DB 
-  
-  nginx: 
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+
+  nginx:
     image: nginx:latest
-    ports: 
+    ports:
       - "8080:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
