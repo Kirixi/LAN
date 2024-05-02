@@ -1,30 +1,42 @@
 name: CI/CD Pipeline
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - develop
 
 jobs:
-  quality-check:
-    name: Official SonarQube Scan v2
-    runs-on: ubuntu-22.04
-
+  build-and-push:
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+      - uses: actions/checkout@v3
+      - name: Build and push the image to GHCR
+        run: |
+          docker login --username Kirixi --password ${{ secrets.GHRC_TOKEN }} ghcr.io
+          docker build . --tag ghcr.io/Kirixi/LAN-staging:latest
+          docker pushghcr.io/Kirixi/LAN-staging:latest
+  # quality-check:
+  #   name: Official SonarQube Scan v2
+  #   runs-on: ubuntu-22.04
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "18"
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Install dependencies
-        run: npm ci
+  #     - name: Set up Node.js
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: "18"
 
-      - name: Sonar Qube Scanning
-        uses: kitabisa/sonarqube-action@v1.2.0
-        with:
-          host: ${{ secrets.SONARQUBE_HOST }}
-          login: ${{ secrets.SONARQUBE_TOKEN }}
-          projectKey: "LAN-project"
+  #     - name: Install dependencies
+  #       run: npm ci
+
+  #     - name: Sonar Qube Scanning
+  #       uses: kitabisa/sonarqube-action@v1.2.0
+  #       with:
+  #         host: ${{ secrets.SONARQUBE_HOST }}
+  #         login: ${{ secrets.SONARQUBE_TOKEN }}
+  #         projectKey: "LAN-project"
