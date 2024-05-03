@@ -14,20 +14,19 @@ jobs:
       - name: Login to GHCR
         run: |
           docker login --username Kirixi --password ${{ secrets.GHRC_TOKEN }} ghcr.io
-          docker build . --tag ghcr.io/Kirixi/lanserver-stable:latest
 
       - name: Build backend image
         run: |
-          docker build . --tag ghcr.io/Kirixi/lanserver-stable:latest
+          docker build . --tag ghcr.io/kirixi/lanserver-stable:latest
         working-directory: ./Backend
       - name: Build frontend image
         run: |
-          docker build . --tag ghcr.io/Kirixi/lanfrontend-stable:latest
+          docker build . --tag ghcr.io/kirixi/lanfrontend-stable:latest
         working-directory: ./Frontend
       - name: Push the images into GHCR
         run: |
-          docker pushghcr.io/Kirixi/landfrontend-stable:latest
-          docker pushghcr.io/Kirixi/landfrontend-stable:latest
+          docker push ghcr.io/kirixi/lanfrontend-stable:latest
+          docker push ghcr.io/kirixi/lanserver-stable:latest
   # quality-check:
   #   name: Official SonarQube Scan v2
   #   runs-on: ubuntu-22.04
