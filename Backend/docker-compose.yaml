@@ -1,13 +1,15 @@
 services:
   frontend:
     build: .
-    image: lanfrontend-stable
+    image: lanfrontend-stable:latest
+    restart: always
     ports:
       - "3000:3000"
 
   webserver1:
     build: .
-    image: lanserver-stable
+    image: lanserver-stable:latest
+    restart: always
     ports:
       - "8000"
     deploy:
