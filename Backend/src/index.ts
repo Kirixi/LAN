@@ -5,7 +5,7 @@ import createServer from "./server.js";
 
 dotenv.config();
 
-const PORT = 8000;
+const PORT = 8080;
 
 const app = createServer();
 

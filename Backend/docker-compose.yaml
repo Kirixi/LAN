@@ -1,4 +1,10 @@
 services:
+  frontend:
+    build: .
+    image: lanfrontend-stable
+    ports:
+      - "3000:3000"
+
   webserver1:
     build: .
     image: lanserver-stable
