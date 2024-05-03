@@ -1,0 +1,153 @@
+@import url("https://fonts.googleapis.com/css?family=Silkscreen");
+
+/* App.css */
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  width: 45vmin;
+  height: 45vmin;
+  pointer-events: none;
+}
+
+.paragraph-error {
+  font-size: large;
+  font-family: Silkscreen;
+}
+
+.image-preview {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 20px;
+  padding-top: 20px;
+}
+
+.error-logo-pos {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.ql-editor {
+  height: 250px;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.container-fluid {
+  background-color: rgb(227, 93, 52);
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.App-header {
+  display: grid;
+  justify-content: center;
+  grid-template-columns: 150px 60px 300px;
+  /*Make the grid smaller than the container*/
+  gap: 2px;
+  padding: 5px;
+  font-family: Silkscreen;
+}
+
+.App-header>div {
+  text-align: center;
+  padding: 10px 0;
+  font-size: 190px;
+  font-style: italic;
+}
+
+.navbar-brand {
+  display: inline-block;
+  padding-top: 0.3125rem;
+  justify-content: center;
+  padding-bottom: 0.3125rem;
+  margin-right: 1rem;
+  font-size: 1.25rem;
+  line-height: inherit;
+  white-space: nowrap;
+}
+
+video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.title {
+  position: absolute;
+  width: 80%;
+  height: 80%;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: left;
+  padding-top: 200px;
+  padding-left: 50px;
+  color: white;
+  font-family: Silkscreen;
+  font-size: 200%;
+}
+
+.fpad {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin-right: -15px;
+  margin-left: -15px;
+  padding: 15px;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+h1 {
+  font-size: 2em;
+  /* Adjust the size as needed */
+}
+
+h2 {
+  font-size: 1.5em;
+}
+
+h3 {
+  font-size: 1.1rem;
+}
