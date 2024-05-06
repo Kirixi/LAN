@@ -1,16 +1,10 @@
 //The code below is taken from Lectorial code archive week 8
 //Writen by Shekhar Kalra
-import http from "./http-common";
 
 import { deleteAllUserPost } from "./Posts";
 const USERS_KEY = "users";
 const CURRENT_KEY = "currentUser";
 const AUTH_KEY = "authuser";
-
-async function getUsers() {
-  const res = await http.get("/users");
-  return res.data;
-}
 
 //Get user details of a user from their email
 function getUser(email) {
@@ -26,14 +20,6 @@ function getUser(email) {
 }
 
 //Add a user to localStorage
-async function addUser(user) {
-  //If there are already users registered, retrieve all users and add the new user onto the user array and store the updated list in localStorage
-
-  const res = await http.post("/users/create", user);
-
-  return res.data;
-
-}
 
 // Check whether an email has already been registered
 function verifyEmail(email) {
@@ -58,7 +44,6 @@ function editEmail(currentEmail, newEmail) {
   let user = getCurrentUser();
   user.email = newEmail;
   sessionStorage.setItem(CURRENT_KEY, JSON.stringify(user));
-  
 }
 
 //Edit name of specific user (same logic as editEmail)
@@ -66,7 +51,6 @@ function editName(currentEmail, newName) {
   let user = getCurrentUser();
   user.name = newName;
   sessionStorage.setItem(CURRENT_KEY, JSON.stringify(user));
- 
 }
 
 //Log out the user by removing from session storage (Referenced from Week 3 Lecture code example 10)
@@ -104,8 +88,6 @@ function getAuthentication() {
 }
 
 export {
-  getUsers,
-  addUser,
   getUser,
   verifyEmail,
   setCurrentUser,
