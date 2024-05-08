@@ -46,6 +46,19 @@ jobs:
         run: ls ~/work/LAN/LAN/Backend
         shell: bash
 
+      - name: SSH into EC2 and deploy with Docker Compose
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ~/home/CICD-pipeline.pem
+          port: ${{ secrets.EC2_SSH_PORT }}
+          script: | 
+            ls
+            cd home/ec2-user/
+            pwd
+
+
       - name: Transfer Docker Compose file
         uses: appleboy/scp-action@master
         with: 
@@ -56,17 +69,7 @@ jobs:
           source: ~/work/LAN/LAN/Backend/docker-compose.yaml
           target: "/home/ec2-user/"
       
-      - name: SSH into EC2 and deploy with Docker Compose
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ~/home/CICD-pipeline.pem
-          port: ${{ secrets.EC2_SSH_PORT }}
-          script: | 
-            cd home/ec2-user/
-            docker login --username Kirixi --password ${{ secrets.GHRC_TOKEN }} ghcr.io 
-            docker compose up
+
 
 
   # quality-check:
