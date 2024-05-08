@@ -47,7 +47,7 @@ jobs:
         with: 
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ~/.ssh/id_rsa
+          key: ~/home/CICD-pipeline.pem
           port: ${{ secrets.EC2_SSH_PORT }}
           source: "/Backend/docker-compose.yaml"
           target: "./home/ec2-user/docker-compose.yml"
