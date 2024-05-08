@@ -38,12 +38,14 @@ jobs:
 
       - name: Decode SSH key and write to file
         run: |
-          mkdir ~/home
-          echo "${{ secrets.EC2_SSH_KEY_BASE64 }}" | base64 --decode > ~/home/CICD-pipeline.pem
-          chmod 400 ~/home/CICD-pipeline.pem
+          mkdir ~/pemfile
+          echo "${{ secrets.EC2_SSH_KEY_BASE64 }}" | base64 --decode > ~/pemfile/CICD-pipeline.pem
+          chmod 400 ~/pemfile/CICD-pipeline.pem
 
       - name: List files
-        run: ls ~/work/LAN/LAN/Backend
+        run: |
+          ls ~/work/LAN/LAN/Backend
+          ls ~/pemfile
         shell: bash
 
       - name: SSH into EC2 and deploy with Docker Compose
@@ -51,7 +53,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ~/home/CICD-pipeline.pem
+          key: ~/pemfile/CICD-pipeline.pem
           port: ${{ secrets.EC2_SSH_PORT }}
           script: | 
             ls
@@ -64,7 +66,7 @@ jobs:
         with: 
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ~/home/CICD-pipeline.pem
+          key: ~/pemfile/CICD-pipeline.pem
           port: ${{ secrets.EC2_SSH_PORT }}
           source: ~/work/LAN/LAN/Backend/docker-compose.yaml
           target: "/home/ec2-user/"
