@@ -43,7 +43,7 @@ jobs:
           chmod 400 ~/home/CICD-pipeline.pem
 
       - name: List files
-        run: ls
+        run: ls /Backend
         shell: bash
 
       - name: Transfer Docker Compose file
@@ -53,7 +53,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ~/home/CICD-pipeline.pem
           port: ${{ secrets.EC2_SSH_PORT }}
-          source: /Backend/docker-compose.yaml
+          source: Backend/docker-compose.yaml
           target: "/home/ec2-user/"
       
       - name: SSH into EC2 and deploy with Docker Compose
