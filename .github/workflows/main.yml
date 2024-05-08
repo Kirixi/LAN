@@ -43,7 +43,7 @@ jobs:
           chmod 400 ~/home/CICD-pipeline.pem
 
       - name: List files
-        run: ls ~/home/runner/work/LAN/LAN/Backend
+        run: ls ~/work/LAN/LAN/Backend | whoami
         shell: bash
 
       - name: Transfer Docker Compose file
