@@ -49,8 +49,8 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ~/home/CICD-pipeline.pem
           port: ${{ secrets.EC2_SSH_PORT }}
-          source: "/Backend/docker-compose.yaml"
-          target: "./home/ec2-user/docker-compose.yml"
+          source: /Backend/docker-compose.yaml
+          target: "/home/ec2-user/docker-compose.yml"
       
       - name: SSH into EC2 and deploy with Docker Compose
         uses: appleboy/ssh-action@master
