@@ -14,9 +14,9 @@ provider "aws" {
 resource "aws_instance" "terra-test" {
   ami           = "ami-0ab3794db9457b60a"
   instance_type = "t2.micro"
-  key_name      = "docker-test"
+  key_name      = "CICD-pipeline"
   tags = {
-    Name = "docker-test-1"
+    Name = "Docker-compose-host"
   }
   security_groups = ["launch-wizard-2"]
   user_data       = <<-EOF

@@ -27,6 +27,43 @@ jobs:
         run: |
           docker push ghcr.io/kirixi/lanfrontend-stable:latest
           docker push ghcr.io/kirixi/lanserver-stable:latest
+
+  deploy-ec2:
+    if: github.ref == 'refs/heads/develop'
+    needs: [build-and-push]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Decode SSH key and write to file
+        run: |
+          echo "${{ secrets.EC2_SSH_KEY_BASE64 }}" | base64 --decode > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Transfer Docker Compose file
+        uses: appleboy/scp-action@master
+        with: 
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ~/.ssh/id_rsa
+          port: ${{ secrets.EC2_SSH_PORT }}
+          source: "/Backend/docker-compose.yaml"
+          target: "./home/ec2-user/docker-compose.yml"
+      
+      - name: SSH into EC2 and deploy with Docker Compose
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ~/.ssh/id_rsa
+          port: ${{ secrets.EC2_SSH_PORT }}
+          script: | 
+            cd home/ec2-user/
+            docker login --username Kirixi --password ${{ secrets.GHRC_TOKEN }} ghcr.io 
+            docker compose up
+
+
   # quality-check:
   #   name: Official SonarQube Scan v2
   #   runs-on: ubuntu-22.04
