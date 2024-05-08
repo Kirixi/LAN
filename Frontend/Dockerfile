@@ -20,7 +20,7 @@ RUN npm install -g serve
 
 COPY package*.json ./
 
-COPY --from=builder /app/build ./build
+COPY --from=builder /app/dist ./dist
 
 EXPOSE 3000
 
