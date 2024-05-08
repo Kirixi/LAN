@@ -38,6 +38,7 @@ jobs:
 
       - name: Decode SSH key and write to file
         run: |
+          mkdir ~/home
           echo "${{ secrets.EC2_SSH_KEY_BASE64 }}" | base64 --decode > ~/home/CICD-pipeline.pem
           chmod 400 ~/home/CICD-pipeline.pem
 
