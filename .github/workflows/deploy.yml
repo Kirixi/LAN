@@ -36,5 +36,5 @@ jobs:
             username: ${{ secrets.EC2_USERNAME }}
             key: ${{ secrets.SSH_PRIVATE_KEY}}
             port: ${{ secrets.EC2_SSH_PORT }}
-            source: LAN/Backend/docker-compose.yaml
+            source: docker-compose.yaml
             target: "/home/ec2-user/"
