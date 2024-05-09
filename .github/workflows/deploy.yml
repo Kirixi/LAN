@@ -13,7 +13,7 @@ jobs:
 
         - name: List files
           run: |
-            ls ~/work/LAN/LAN/Backend
+            ls ~/work/LAN/LAN/Backend/src
           shell: bash
 
         - name: SSH into EC2 and deploy with Docker Compose
