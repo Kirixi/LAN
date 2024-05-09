@@ -6,7 +6,6 @@ on:
 
 jobs:
   deploy-ec2:
-    if: github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
     steps:
         - name: Checkout code
@@ -15,6 +14,7 @@ jobs:
         - name: List files
           run: |
             ls ~/work/LAN/LAN/Backend
+            echo ${{ secrets.SSH_PRIVATE_KEY}}
           shell: bash
 
         - name: SSH into EC2 and deploy with Docker Compose
