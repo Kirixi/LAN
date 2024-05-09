@@ -29,23 +29,20 @@ jobs:
           docker push ghcr.io/kirixi/lanserver-stable:latest
 
   deploy-ec2:
-    if: github.ref == 'refs/heads/develop'
-    needs: [build-and-push]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # - name: Decode SSH key and write to file
-      #   run: |
-      #     mkdir ~/pemfile
-      #     echo "${{ secrets.EC2_SSH_KEY_BASE64 }}" | base64 --decode > ~/pemfile/CICD-pipeline.pem
-      #     chmod 400 ~/pemfile/CICD-pipeline.pem
-
-      - name: List files
-        run: |
-          ls ~/work/LAN/LAN/Backend
-        shell: bash
+      - name: Transfer Docker Compose file
+        uses: appleboy/scp-action@master
+        with: 
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY}}
+          port: ${{ secrets.EC2_SSH_PORT }}
+          source: docker-compose.yaml
+          target: "/home/ec2-user/docker-compose/"
 
       - name: SSH into EC2 and deploy with Docker Compose
         uses: appleboy/ssh-action@master
@@ -55,19 +52,12 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY}}
           port: ${{ secrets.EC2_SSH_PORT }}
           script: | 
-            ls
-            cd home/ec2-user/
-            pwd
+            cd home/ec2-user/docker-compose/
+            docker login --username Kirixi --password ${{ secrets.GHRC_TOKEN }} ghcr.io 
+            docker pull ghcr.io/kirixi/lanfrontend-stable:latest
+            docker pull ghcr.io/kirixi/lanserver-stable:latest
+            docker compose up
 
-      - name: Transfer Docker Compose file
-        uses: appleboy/scp-action@master
-        with: 
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY}}
-          port: ${{ secrets.EC2_SSH_PORT }}
-          source: ~/work/LAN/LAN/Backend/docker-compose.yaml
-          target: "/home/ec2-user/"
       
 
 

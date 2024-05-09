@@ -4,14 +4,14 @@ services:
     image: lanfrontend-stable:latest
     restart: always
     ports:
-      - "3000:3000"
+      - "3000:80"
 
   webserver1:
     build: .
     image: lanserver-stable:latest
     restart: always
     ports:
-      - "8000"
+      - "8080"
     deploy:
       replicas: 2
 
@@ -40,7 +40,7 @@ services:
   nginx:
     image: nginx:latest
     ports:
-      - "8080:80"
+      - "8000:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
     depends_on:

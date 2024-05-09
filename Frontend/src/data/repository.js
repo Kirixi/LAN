@@ -1,6 +1,6 @@
 import axios from "axios";
 // --- Constants ----------------------------------------------------------------------------------
-const API_HOST = "http://localhost:8080";
+const API_HOST = "http://localhost:8000";
 
 // --- User ---------------------------------------------------------------------------------------
 async function verifyUser(userObj) {

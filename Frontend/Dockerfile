@@ -12,16 +12,12 @@ RUN npm run build
 
 
 #
-FROM node:14-alpine
 
-WORKDIR /app
+FROM nginx:alpine as production
 
-RUN npm install -g serve
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-COPY package*.json ./
+EXPOSE 80
 
-COPY --from=builder /app/dist ./dist
+CMD ["nginx", "-g", "daemon off;"]
 
-EXPOSE 3000
-
-CMD ["serve", "-s", "build", "-l", "3000"]
