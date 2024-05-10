@@ -15,19 +15,6 @@ services:
     deploy:
       replicas: 2
 
-  # Used for testing load balancer.
-  # webserver2:
-  #   build: .
-  #   image: lanserver2.2
-  #   ports:
-  #     - "8000"
-
-  # webserver3:
-  #   build: .
-  #   image: lanserver2.3
-  #   ports:
-  #     - "8000"
-
   mongo:
     image: mongo:latest
     ports:
