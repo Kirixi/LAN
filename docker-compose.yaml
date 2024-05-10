@@ -1,14 +1,14 @@
 services:
   frontend:
     build: .
-    image: lanfrontend-stable:latest
+    image: ghcr.io/kirixi/lanfrontend-stable:latest
     restart: always
     ports:
       - "3000:80"
 
   webserver1:
     build: .
-    image: lanserver-stable:latest
+    image: ghcr.io/kirixi/lanserver-stable:latest
     restart: always
     ports:
       - "8080"
