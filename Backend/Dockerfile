@@ -24,6 +24,6 @@ COPY --from=builder /user/src/dist ./dist
 
 ENV CONNECTION_STRING="mongodb://admin:admin@mongo:27017?authSource=admin"
 
-EXPOSE 8000
+EXPOSE 8080
 
 CMD ["node", "dist/index.js"]

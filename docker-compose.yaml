@@ -1,32 +1,19 @@
 services:
   frontend:
     build: .
-    image: lanfrontend-stable:latest
+    image: ghcr.io/kirixi/lanfrontend-stable:latest
     restart: always
     ports:
-      - "3000:3000"
+      - "3000:80"
 
   webserver1:
     build: .
-    image: lanserver-stable:latest
+    image: ghcr.io/kirixi/lanserver-stable:latest
     restart: always
     ports:
-      - "8000"
+      - "8080"
     deploy:
       replicas: 2
-
-  # Used for testing load balancer.
-  # webserver2:
-  #   build: .
-  #   image: lanserver2.2
-  #   ports:
-  #     - "8000"
-
-  # webserver3:
-  #   build: .
-  #   image: lanserver2.3
-  #   ports:
-  #     - "8000"
 
   mongo:
     image: mongo:latest
@@ -40,7 +27,7 @@ services:
   nginx:
     image: nginx:latest
     ports:
-      - "8080:80"
+      - "8000:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
     depends_on:
