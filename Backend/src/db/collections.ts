@@ -1,4 +1,3 @@
-import { client } from "./connect.js";
 import { Schema, model } from "mongoose";
 
 import { User, Post, Comment, Follows } from "./interfaces.js";

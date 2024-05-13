@@ -1,25 +1,22 @@
-import { MongoClient } from "mongodb";
+import { DynamoDBClient, ListTablesCommand } from "@aws-sdk/client-dynamodb";
+import { fromEnv } from "@aws-sdk/credential-provider-env";
 import * as dotenv from "dotenv";
-import mongoose, { Schema } from "mongoose";
-import { User } from "./interfaces.js";
-// import { createCollections } from "./collections.js";
-dotenv.config();
-const mongoConnectionString: any = process.env.CONNECTION_STRING;
 
-export const client = mongoose.connect(mongoConnectionString);
+dotenv.config();
+
+export const client = new DynamoDBClient({
+  region: process.env.REGION,
+  credentials: fromEnv()
+});
 
 async function connectDb() {
   try {
-    await client;
-
-    if (mongoose.connection.readyState === 1) {
-      console.log("Database connected successfully.");
-    } else {
-      console.log("Failed to connect to the database");
-    }
+    const command = new ListTablesCommand({});
+    const response = await client.send(command);
+    console.log("Db connected!");
   } catch (e: any) {
     console.log("Error connecting to db", e.message);
   }
 }
-
 export { connectDb };
+

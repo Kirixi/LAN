@@ -14,6 +14,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.574.0",
+    "@aws-sdk/credential-provider-env": "^3.568.0",
+    "@aws-sdk/lib-dynamodb": "^3.574.0",
     "@types/cors": "^2.8.17",
     "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.21",
@@ -27,11 +30,13 @@
     "mongodb": "^6.3.0",
     "mongodb-memory-server": "^9.1.8",
     "mongoose": "^8.1.1",
-    "nodemon": "^3.0.3"
+    "nodemon": "^3.0.3",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "@types/supertest": "^6.0.2",
+    "@types/uuid": "^9.0.8",
     "jest": "^29.7.0",
     "supertest": "^6.3.4",
     "ts-jest": "^29.1.2",
