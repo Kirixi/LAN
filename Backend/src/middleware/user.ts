@@ -8,14 +8,23 @@ import { getItemById, createItem } from "./DynamoDB/Dynamodb-api.js";
 const createUser = async (req: Request, res: Response) => {
 	try {
 		const passwordHash = await argon2.hash(req.body.password);
-		const user = new UserModel({
+		// const user = new UserModel({
+		// 	_id: uuidv4(),
+		// 	email: req.body.email,
+		// 	password: passwordHash,
+		// 	username: req.body.username,
+		// 	joined: req.body.joined,
+		// 	status: "",
+		// });
+
+		const user: User = {
 			_id: uuidv4(),
 			email: req.body.email,
 			password: passwordHash,
 			username: req.body.username,
 			joined: req.body.joined,
 			status: "",
-		});
+		};
 
 		const response = await createItem(user, "User-dev");
 		return res.status(200).json(response);
