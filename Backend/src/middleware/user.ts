@@ -3,19 +3,23 @@ import { User } from "../db/interfaces.js";
 import { UserModel } from "../db/collections.js";
 import * as argon2 from "argon2";
 import { v4 as uuidv4 } from "uuid";
-import { getItemById, createItem } from "./DynamoDB/Dynamodb-api.js";
+import { getItemById, createItem, queryTable, gsiSearch } from "./DynamoDB/Dynamodb-api.js";
+import Joi from "joi";
 
+const TABLENAME = "User-dev";
 const createUser = async (req: Request, res: Response) => {
 	try {
+		const validateBody = Joi.object({
+			email: Joi.string().email().required(),
+			password: Joi.string().required(),
+			username: Joi.string().required(),
+			joined: Joi.date().required(),
+		});
+		const { error } = validateBody.validate(req.body);
+		if (error) {
+			throw new Error("Validation Error, some fields are missing.");
+		}
 		const passwordHash = await argon2.hash(req.body.password);
-		// const user = new UserModel({
-		// 	_id: uuidv4(),
-		// 	email: req.body.email,
-		// 	password: passwordHash,
-		// 	username: req.body.username,
-		// 	joined: req.body.joined,
-		// 	status: "",
-		// });
 
 		const user: User = {
 			_id: uuidv4(),
@@ -26,7 +30,7 @@ const createUser = async (req: Request, res: Response) => {
 			status: "",
 		};
 
-		const response = await createItem(user, "User-dev");
+		const response = await createItem(user, TABLENAME);
 		return res.status(200).json(response);
 	} catch (e: any) {
 		console.log(e);
@@ -36,8 +40,11 @@ const createUser = async (req: Request, res: Response) => {
 
 const verifyEmail = async (req: Request, res: Response) => {
 	try {
-		const response = await UserModel.findOne({ email: req.params.email });
-
+		const queryExpression = "email = :email";
+		const params = {
+			":email": req.params.email,
+		};
+		const response = await gsiSearch(params, TABLENAME, queryExpression, "email");
 		if (response == null) {
 			throw new Error("not found");
 		}
@@ -50,9 +57,9 @@ const verifyEmail = async (req: Request, res: Response) => {
 const getUserById = async (req: Request, res: Response) => {
 	try {
 		const params = {
-			user_id: req.params.id,
+			_id: req.params.id,
 		};
-		const response = await getItemById(params, "User-dev");
+		const response = await getItemById(params, TABLENAME);
 		return res.status(200).json(response);
 	} catch (e: any) {
 		return res.status(404).json({ message: "User is not found" });
@@ -61,7 +68,11 @@ const getUserById = async (req: Request, res: Response) => {
 
 const getUsernamebyEmail = async (req: Request, res: Response) => {
 	try {
-		const response = await UserModel.findOne({ email: req.params.email });
+		const queryExpression = "email = :email";
+		const params = {
+			":email": req.params.email,
+		};
+		const response = await gsiSearch(params, TABLENAME, queryExpression, "email");
 		return res.status(200).json(response);
 	} catch (e: any) {
 		return res.status(401).json({ message: e.message });

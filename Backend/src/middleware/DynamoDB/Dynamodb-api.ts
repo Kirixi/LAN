@@ -31,7 +31,7 @@ const createItem = async (item: Object, table: string) => {
 		const command = new PutCommand({
 			TableName: table,
 			Item: item,
-			ReturnValues: "ALL_NEW",
+			ReturnValues: "ALL_OLD",
 		});
 
 		const response = await docClient.send(command);
@@ -88,8 +88,24 @@ const queryTable = async (params: Object, table: string, queryExp: string) => {
 	}
 };
 
+const gsiSearch = async (params: Object, table: string, queryExp: string, gsi: string) => {
+	try {
+		const command = new QueryCommand({
+			TableName: table,
+			IndexName: gsi, // GSI stands for Global Secondary Index
+			KeyConditionExpression: queryExp,
+			ExpressionAttributeValues: params,
+		});
+		const response = await docClient.send(command);
+		console.log(response);
+		return response;
+	} catch (e: any) {
+		throw e;
+	}
+};
+
 //TODO
 // const scanTable = async () => {
 
 // }
-export { getItemById, createItem, updateItem, deleteItem, queryTable };
+export { getItemById, createItem, updateItem, deleteItem, queryTable, gsiSearch };
