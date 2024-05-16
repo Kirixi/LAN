@@ -4,7 +4,7 @@ export interface User {
 	password: string;
 	username: string;
 	joined: string;
-	status: string;
+	about: string;
 }
 
 export interface Post {

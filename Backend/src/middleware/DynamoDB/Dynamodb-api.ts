@@ -11,15 +11,17 @@ import { client } from "../../db/connect.js";
 
 const docClient = DynamoDBDocumentClient.from(client);
 
-const getItemById = async (params: Object, table: string) => {
+const getItemById = async (params: Object, table: string, projExp: string, expAtt: any) => {
 	try {
 		const command = new GetCommand({
 			TableName: table,
 			Key: params,
+			ProjectionExpression: projExp,
+			ExpressionAttributeNames: expAtt,
 		});
 
 		const response = await docClient.send(command);
-		console.log(response);
+		console.log(response.Item);
 		return response;
 	} catch (e: any) {
 		throw e;
@@ -53,7 +55,7 @@ const updateItem = async (params: Object, table: string, updateconfig: string, n
 		});
 
 		const response = await docClient.send(command);
-		console.log(response);
+		console.log(response.Attributes);
 		return response;
 	} catch (e: any) {
 		throw e;
@@ -67,7 +69,7 @@ const deleteItem = async (params: Object, table: string) => {
 	});
 
 	const response = await docClient.send(command);
-	console.log(response);
+	console.log(response.Attributes);
 	return response;
 };
 
@@ -88,24 +90,32 @@ const queryTable = async (params: Object, table: string, queryExp: string) => {
 	}
 };
 
-const gsiSearch = async (params: Object, table: string, queryExp: string, gsi: string) => {
+const gsiSearch = async (params: Object, table: string, queryExp: string, gsiName: string) => {
 	try {
 		const command = new QueryCommand({
 			TableName: table,
-			IndexName: gsi, // GSI stands for Global Secondary Index
+			IndexName: gsiName, // GSI stands for Global Secondary Index
 			KeyConditionExpression: queryExp,
 			ExpressionAttributeValues: params,
 		});
 		const response = await docClient.send(command);
-		console.log(response);
+		console.log(response.Items);
 		return response;
 	} catch (e: any) {
 		throw e;
 	}
 };
 
-//TODO
-// const scanTable = async () => {
+const scanTable = async (table: string) => {
+	try {
+		const command = new ScanCommand({
+			TableName: table,
+		});
+		const response = await docClient.send(command);
 
-// }
-export { getItemById, createItem, updateItem, deleteItem, queryTable, gsiSearch };
+		return response;
+	} catch (e: any) {
+		throw e;
+	}
+};
+export { getItemById, createItem, updateItem, deleteItem, queryTable, gsiSearch, scanTable };
