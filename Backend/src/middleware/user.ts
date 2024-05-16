@@ -22,7 +22,7 @@ const createUser = async (req: Request, res: Response) => {
 			username: Joi.string().required().messages({
 				"any.required": "Username is required.",
 			}),
-			joined: Joi.string().required().messages({
+			joined: Joi.date().required().messages({
 				"any.required": "Joined date is required.",
 			}),
 		});

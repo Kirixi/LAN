@@ -99,8 +99,7 @@ const gsiSearch = async (params: Object, table: string, queryExp: string, gsiNam
 			ExpressionAttributeValues: params,
 		});
 		const response = await docClient.send(command);
-		console.log(response.Items);
-		return response;
+		return response.Items;
 	} catch (e: any) {
 		throw e;
 	}

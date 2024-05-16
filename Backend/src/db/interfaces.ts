@@ -13,8 +13,8 @@ export interface Post {
 	link: string | null;
 	parent_id: string;
 	username: string;
-	createdAt: Date;
-	updatedAt: Date;
+	createdAt: string;
+	updatedAt: string;
 	comments: Object[];
 	deleted: boolean;
 }
