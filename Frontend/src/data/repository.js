@@ -95,14 +95,22 @@ async function createPost(post) {
 	}
 }
 
-async function uploadToS3(image, link, fileType) {
+async function uploadToS3(image, link, fileType, parent_id) {
 	try {
 		const response = await axios.put(link, image, {
 			headers: {
 				"Content-Type": fileType,
 			},
 		});
-		return response;
+		if (response.status === 200) {
+			console.log("aftr upload");
+			const presignedUrl = await axios.get(API_HOST + `/api/bucket/getSingle/`, {
+				params: { parent_id: parent_id, imgName: image.name },
+			});
+			return presignedUrl;
+		} else {
+			throw new Error("No image found");
+		}
 	} catch (e) {
 		console.log(e.message);
 		throw e;

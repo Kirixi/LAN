@@ -305,27 +305,6 @@ function Forum(props) {
 			return;
 		}
 
-		// let post = {
-		// 	parent_id: props.user._id,
-		// 	content: content,
-		// 	username: props.user.username,
-		// 	link: null,
-		// 	createdAt: created,
-		// 	updatedAt: null,
-		// };
-
-		// if (image !== null) {
-		// 	post.link = image.name;
-		// }
-		// const newPost = await createPost(post);
-		// if (image !== null) {
-		// 	const res = await uploadToS3(image.name, newPost.url, image.type);
-		// 	console.log(res);
-		// }
-
-		// newPost.name = props.user.username;
-		// setPosts([...posts, newPost]);
-		// reset();
 		if (image !== null) {
 			post = {
 				parent_id: props.user._id,
@@ -511,6 +490,16 @@ function Forum(props) {
 									</Flex>
 
 									<div style={{ paddingTop: "5px" }} dangerouslySetInnerHTML={{ __html: post.content }} />
+									<Spacer />
+									{post.link !== "" ? (
+										<>
+											<div className="image-preview">
+												<img src={post.link} alt="preview" height={200} width={400} />
+											</div>
+										</>
+									) : (
+										<></>
+									)}
 									<Spacer />
 								</Box>
 								<Box mt={4}>
