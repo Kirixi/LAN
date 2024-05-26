@@ -20,7 +20,7 @@ const createPost = async (req: Request, res: Response) => {
 		});
 
 		if (req.body.link !== null) {
-			url = await uploadFile(req.body.link);
+			url = await uploadFile(`${req.body.parent_id}/${req.body.link}`);
 		}
 		const response = await post.save();
 		return res.status(200).json({ data: response, url: url });
