@@ -17,14 +17,11 @@ const s3 = new S3Client({
 
 const getURL = async (req: Request, res: Response) => {
 	try {
-		const imgName = req.params.parent_id + "/" + req.params.imgName;
-		console.log(req.params);
-		console.log(imgName);
+		const imgName = req.query.parent_id + "/" + req.query.imgName;
 		const command = new GetObjectCommand({ Bucket: S3_BUCKET, Key: imgName });
 		const url = await getSignedUrl(s3, command, { expiresIn: validTimer });
 		return res.status(200).json({ url: url });
 	} catch (e: any) {
-		console.log(e);
 		return res.status(401).json({ message: e.message });
 	}
 };
@@ -42,7 +39,8 @@ export const uploadFile = async (imgName: string) => {
 export const getImagePresignUrl = async (imgName: string) => {
 	try {
 		const command = new GetObjectCommand({ Bucket: S3_BUCKET, Key: imgName });
-		return await getSignedUrl(s3, command, { expiresIn: validTimer });
+		const response = await getSignedUrl(s3, command, { expiresIn: validTimer });
+		return response;
 	} catch (e: any) {
 		console.log(e);
 		throw e;

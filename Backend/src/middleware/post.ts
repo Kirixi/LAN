@@ -1,7 +1,7 @@
 import { Response, Request } from "express";
 import { Post } from "../db/interfaces.js";
 import { PostModel, CommentModel } from "../db/collections.js";
-import { uploadFile } from "./s3-operations.js";
+import { uploadFile, getImagePresignUrl } from "./s3-operations.js";
 import mongoose from "mongoose";
 
 const createPost = async (req: Request, res: Response) => {
@@ -49,6 +49,14 @@ const getAllPost = async (req: Request, res: Response) => {
 		for (const post of response) {
 			const comments = await CommentModel.find({ parent_id: post._id });
 			post.comments = comments;
+		}
+
+		for (const post of response) {
+			if (post.link !== null) {
+				const imageName = post.parent_id + "/" + post.link;
+				const url = await getImagePresignUrl(imageName);
+				post.link = url;
+			}
 		}
 		return res.status(200).json(response);
 	} catch (e: any) {

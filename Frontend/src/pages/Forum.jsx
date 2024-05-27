@@ -333,9 +333,10 @@ function Forum(props) {
 		console.log(newPost);
 
 		if (image !== null) {
-			const res = await uploadToS3(image, newPost.link, image.type);
-			console.log(res);
+			const res = await uploadToS3(image, newPost.link, image.type, newPost.parent_id);
+			newPost.link = res.url;
 		}
+
 		newPost.name = props.user.username;
 		setPosts([...posts, newPost]);
 		reset();
@@ -491,10 +492,10 @@ function Forum(props) {
 
 									<div style={{ paddingTop: "5px" }} dangerouslySetInnerHTML={{ __html: post.content }} />
 									<Spacer />
-									{post.link !== "" ? (
+									{post.link != null ? (
 										<>
 											<div className="image-preview">
-												<img src={post.link} alt="preview" height={200} width={400} />
+												<img src={post.link} alt="preview" className="img-display" />
 											</div>
 										</>
 									) : (

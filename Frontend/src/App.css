@@ -33,6 +33,12 @@ body,
   padding-top: 20px;
 }
 
+.img-display{
+  object-fit: scale-down;
+  max-width: 90%;
+  max-height: 500px;
+}
+
 .error-logo-pos {
   display: flex;
   flex-direction: column;

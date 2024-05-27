@@ -103,11 +103,10 @@ async function uploadToS3(image, link, fileType, parent_id) {
 			},
 		});
 		if (response.status === 200) {
-			console.log("aftr upload");
-			const presignedUrl = await axios.get(API_HOST + `/api/bucket/getSingle/`, {
+			const presignedUrl = await axios.get(API_HOST + "/api/bucket/getSingle", {
 				params: { parent_id: parent_id, imgName: image.name },
 			});
-			return presignedUrl;
+			return presignedUrl.data;
 		} else {
 			throw new Error("No image found");
 		}
