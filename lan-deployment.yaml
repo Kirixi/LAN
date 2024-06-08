@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lan
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lan
+  template:
+    metadata:
+      labels:
+        app: lan
+    spec:
+      containers:
+        - name: lan
+          image: ghcr.io/kirixi/lanfrontend-stable
+      imagePullSecrets:
+        - name: ghcr-secret
