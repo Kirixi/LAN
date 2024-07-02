@@ -13,12 +13,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set outputs
-        id: vars
-        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-      - name: Check outputs
-        run: echo ${{ steps.vars.outputs.sha_short }}
-
       - name: Login to GHCR
         run: |
           docker login --username Kirixi --password ${{ secrets.GHRC_TOKEN }} ghcr.io
@@ -29,12 +23,12 @@ jobs:
         working-directory: ./Backend
       - name: Build frontend image
         run: |
-          docker build . --tag ghcr.io/kirixi/lanfrontend-stable:${{ github.sha }}
+          docker build . --tag ghcr.io/kirixi/lanfrontend-stable:${GITHUB_SHA::7}
         working-directory: ./Frontend
       - name: Push the images into GHCR
         run: |
-          docker push ghcr.io/kirixi/lanfrontend-stable:${{ github.sha }}
-          docker push ghcr.io/kirixi/lanserver-stable:${{ github.sha }}
+          docker push ghcr.io/kirixi/lanfrontend-stable:${GITHUB_SHA::7}
+          docker push ghcr.io/kirixi/lanserver-stable:${GITHUB_SHA::7}
 
   deploy-ec2:
     runs-on: ubuntu-latest
