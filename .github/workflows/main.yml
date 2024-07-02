@@ -10,14 +10,14 @@ jobs:
     if: github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: "Run slugify"
-        id: slugify
-        uses: eltimn/slugify-action@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: "Echo slugify outputs"
-        run: |
-          echo ${{steps.slugify.outputs.branch}}-${{steps.slugify.outputs.sha}}
+      - name: Set outputs
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      - name: Check outputs
+        run: echo ${{ steps.vars.outputs.sha_short }}
 
       - name: Login to GHCR
         run: |
