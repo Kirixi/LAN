@@ -17,16 +17,16 @@ jobs:
 
       - name: Build backend image
         run: |
-          docker build . --tag ghcr.io/kirixi/lanserver-stable:${{ env.sha_short }}
+          docker build . --tag ghcr.io/kirixi/lanserver-stable:${{ github.sha_short }}
         working-directory: ./Backend
       - name: Build frontend image
         run: |
-          docker build . --tag ghcr.io/kirixi/lanfrontend-stable:${{ env.sha_short }}
+          docker build . --tag ghcr.io/kirixi/lanfrontend-stable:${{ github.sha_short }}
         working-directory: ./Frontend
       - name: Push the images into GHCR
         run: |
-          docker push ghcr.io/kirixi/lanfrontend-stable:${{ env.sha_short }}
-          docker push ghcr.io/kirixi/lanserver-stable:${{ env.sha_short }}
+          docker push ghcr.io/kirixi/lanfrontend-stable:${{ github.sha_short }}
+          docker push ghcr.io/kirixi/lanserver-stable:${{ github.sha_short }}
 
   deploy-ec2:
     runs-on: ubuntu-latest
