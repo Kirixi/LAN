@@ -11,22 +11,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: "Run slugify"
+        id: slugify
+        uses: eltimn/slugify-action@v2
+
+      - name: "Echo slugify outputs"
+        run: |
+          echo ${{steps.slugify.outputs.branch}}-${{steps.slugify.outputs.sha}}
+
       - name: Login to GHCR
         run: |
           docker login --username Kirixi --password ${{ secrets.GHRC_TOKEN }} ghcr.io
 
       - name: Build backend image
         run: |
-          docker build . --tag ghcr.io/kirixi/lanserver-stable:${{ github.sha_short }}
+          docker build . --tag ghcr.io/kirixi/lanserver-stable:${GITHUB_SHA::7}
         working-directory: ./Backend
       - name: Build frontend image
         run: |
-          docker build . --tag ghcr.io/kirixi/lanfrontend-stable:${{ github.sha_short }}
+          docker build . --tag ghcr.io/kirixi/lanfrontend-stable:${{ github.sha }}
         working-directory: ./Frontend
       - name: Push the images into GHCR
         run: |
-          docker push ghcr.io/kirixi/lanfrontend-stable:${{ github.sha_short }}
-          docker push ghcr.io/kirixi/lanserver-stable:${{ github.sha_short }}
+          docker push ghcr.io/kirixi/lanfrontend-stable:${{ github.sha }}
+          docker push ghcr.io/kirixi/lanserver-stable:${{ github.sha }}
 
   deploy-ec2:
     runs-on: ubuntu-latest
