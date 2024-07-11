@@ -27,3 +27,5 @@ RUN chmod +x /container-env.sh
 
 ENTRYPOINT ["/container-env.sh"]
 
+CMD ["nginx", "-g", "daemon off;"]
+
