@@ -21,5 +21,9 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+COPY container-env.sh /container-env.sh
+
+RUN chmod +x /container-env.sh
+
+ENTRYPOINT ["/container-env.sh"]
 
