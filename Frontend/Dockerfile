@@ -21,9 +21,11 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
+ENV VITE_API_LINK=VITE_API_LINK_PLACEHOLDER
+
 COPY container-env.sh /container-env.sh
 
-RUN chmod +x /container-env.sh
+RUN chmod u+x /usr/local/bin/container-env.sh
 
 ENTRYPOINT ["/container-env.sh"]
 
