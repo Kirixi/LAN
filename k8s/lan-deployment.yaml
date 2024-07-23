@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lan-frontend
+  namespace: lan-test
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: lan-frontend
+  template:
+    metadata:
+      labels:
+        app: lan-frontend
+    spec:
+      containers:
+        - name: lan-frontend
+          image: ghcr.io/kirixi/lanfrontend-stable:cc70962
+          env:
+            - name: MY_APP_API_LINK
+              valueFrom:
+                secretKeyRef:
+                  name: lan-secrets
+                  key: MY_APP_API_LINK
+      imagePullSecrets:
+        - name: ghcr-secret
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lan-api
+  namespace: lan-test
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: lan-api
+  template:
+    metadata:
+      labels:
+        app: lan-api
+    spec:
+      containers:
+        - name: lan-api
+          image: ghcr.io/kirixi/lanserver-stable:cc70962 
+          env:
+            - name: CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: lan-secrets
+                  key: CONNECTION_STRING
+      imagePullSecrets:
+        - name: ghcr-secret
