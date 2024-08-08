@@ -4,6 +4,10 @@ metadata:
   name: lan-ingress
   namespace: lan-test
 spec:
+  tls:
+    - hosts:
+      - "lan.tjonathan.com"
+      secretName: tls-secret
   ingressClassName: nginx
   rules:
     - host: hello-world.example
