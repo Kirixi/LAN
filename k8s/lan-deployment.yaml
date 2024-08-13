@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: lan-frontend
-          image: ghcr.io/kirixi/lanfrontend-stable:947e3a3
+          image: ghcr.io/kirixi/lanfrontend-stable:923c92d
           env:
             - name: MY_APP_API_LINK
               valueFrom:
@@ -23,7 +23,7 @@ spec:
                   name: lan-secrets
                   key: MY_APP_API_LINK
       imagePullSecrets:
-        - name: ghcr-token
+        - name: ghcr-new-secret
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -42,7 +42,7 @@ spec:
     spec:
       containers:
         - name: lan-api
-          image: ghcr.io/kirixi/lanserver-stable:947e3a3
+          image: ghcr.io/kirixi/lanserver-stable:923c92d
           env:
             - name: CONNECTION_STRING
               valueFrom:
@@ -50,4 +50,4 @@ spec:
                   name: lan-secrets
                   key: CONNECTION_STRING
       imagePullSecrets:
-        - name: ghcr-token
+        - name: ghcr-new-secret
