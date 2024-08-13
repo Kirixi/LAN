@@ -7,10 +7,11 @@ spec:
   tls:
     - hosts:
       - "lan.tjonathan.com"
+      - "api.tjonathan.com"
       secretName: tls-secret
   ingressClassName: nginx
   rules:
-    - host: hello-world.example
+    - host: lan.tjonathan.com
       http:
         paths:
           - path: /
@@ -20,7 +21,7 @@ spec:
                 name: lan-frontend-service
                 port:
                   number: 80
-    - host: hello-world.api
+    - host: api.tjonathan.com
       http:
         paths:
           - path: /
