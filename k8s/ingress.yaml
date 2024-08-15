@@ -11,7 +11,7 @@ spec:
     - hosts:
       - "lan.tjonathan.com"
       - "api.tjonathan.com"
-      secretName: tls-secret
+      secretName: test-secret
   ingressClassName: nginx
   rules:
     - host: lan.tjonathan.com
