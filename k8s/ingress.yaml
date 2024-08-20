@@ -3,14 +3,18 @@ kind: Ingress
 metadata:
   name: lan-ingress
   namespace: lan-test
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
   tls:
     - hosts:
       - "lan.tjonathan.com"
-      secretName: tls-secret
+      - "api.tjonathan.com"
+      secretName: test-secret
   ingressClassName: nginx
   rules:
-    - host: hello-world.example
+    - host: lan.tjonathan.com
       http:
         paths:
           - path: /
@@ -20,7 +24,7 @@ spec:
                 name: lan-frontend-service
                 port:
                   number: 80
-    - host: hello-world.api
+    - host: api.tjonathan.com
       http:
         paths:
           - path: /

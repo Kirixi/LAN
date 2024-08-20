@@ -23,7 +23,7 @@ spec:
                   name: lan-secrets
                   key: MY_APP_API_LINK
       imagePullSecrets:
-        - name: ghcr-new-secret
+        - name: ghcr-token
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -50,4 +50,4 @@ spec:
                   name: lan-secrets
                   key: CONNECTION_STRING
       imagePullSecrets:
-        - name: ghcr-new-secret
+        - name: ghcr-token
