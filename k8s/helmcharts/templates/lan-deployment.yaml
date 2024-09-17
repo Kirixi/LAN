@@ -49,5 +49,10 @@ spec:
                 secretKeyRef:
                   name: lan-secrets
                   key: CONNECTION_STRING
+            - name: REGION
+              valueFrom:
+                secretKeyRef:
+                  name: lan-secrets
+                  key: CONNECTION_STRING
       imagePullSecrets:
         - name: ghcr-token
