@@ -22,26 +22,6 @@ spec:
                 secretKeyRef:
                   name: lan-secrets
                   key: MY_APP_API_LINK
-            - name: REGION
-              valueFrom:
-                secretKeyRef:
-                  name: lan-secrets
-                  key: REGION
-            - name: AWS_ACCESS_KEY_ID
-              valueFrom:
-                secretKeyRef:
-                  name: lan-secrets
-                  key: AWS_ACCESS_KEY_ID
-            - name: AWS_SECRET_ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: lan-secrets
-                  key: AWS_SECRET_ACCESS_KEY
-            - name: S3_BUCKET
-              valueFrom:
-                secretKeyRef:
-                  name: lan-secrets
-                  key: S3_BUCKET
       imagePullSecrets:
         - name: ghcr-token
 ---
@@ -73,6 +53,21 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: lan-secrets
-                  key: CONNECTION_STRING
+                  key: REGION
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: lan-secrets
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: lan-secrets
+                  key: AWS_SECRET_ACCESS_KEY
+            - name: S3_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: lan-secrets
+                  key: S3_BUCKET
       imagePullSecrets:
         - name: ghcr-token
