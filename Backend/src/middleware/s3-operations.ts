@@ -41,6 +41,9 @@ export const getImagePresignUrl = async (imgName: string) => {
 	try {
 		const command = new GetObjectCommand({ Bucket: bucketName, Key: imgName });
 		const response = await getSignedUrl(s3, command, { expiresIn: validTimer });
+		const credentials = await fromEnv()(); // Resolve the credentials
+		console.log("Access Key ID:", credentials.accessKeyId);
+		console.log("Secret Access Key:", credentials.secretAccessKey);
 		return response;
 	} catch (e: any) {
 		console.log(e);
