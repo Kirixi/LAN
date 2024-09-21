@@ -28,7 +28,7 @@ const getURL = async (req: Request, res: Response) => {
 export const uploadFile = async (imgName: string) => {
 	try {
 		const command = new PutObjectCommand({ Bucket: bucketName, Key: imgName, ContentType: "image/jpeg", ACL: "public-read" });
-		return await getSignedUrl(s3, command, { expiresIn: validTimerUpload });
+		return await getSignedUrl(s3, command, { expiresIn: validTimerUpload, signableHeaders: new Set(["content-type"]) });
 	} catch (e: any) {
 		console.log(e);
 		throw e;
@@ -37,7 +37,7 @@ export const uploadFile = async (imgName: string) => {
 
 export const getImagePresignUrl = async (imgName: string) => {
 	try {
-		const command = new GetObjectCommand({ Bucket: bucketName, Key: imgName });
+		const command = new GetObjectCommand({ Bucket: bucketName, Key: imgName, ResponseContentType: "image/jpeg" });
 		const response = await getSignedUrl(s3, command, { expiresIn: validTimer, signableHeaders: new Set(["content-type"]) });
 		return response;
 	} catch (e: any) {
