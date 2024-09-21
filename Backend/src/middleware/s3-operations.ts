@@ -9,6 +9,7 @@ const accessKeyId = AWS_ACCESS_KEY;
 const secretAccessKey = AWS_SECRET_KEY;
 const validTimer = 3000; //50 Mins
 const validTimerUpload = 500;
+const bucketName = S3_BUCKET.trim();
 
 const s3 = new S3Client({
 	region: process.env.REGION,
@@ -18,7 +19,7 @@ const s3 = new S3Client({
 const getURL = async (req: Request, res: Response) => {
 	try {
 		const imgName = req.query.parent_id + "/" + req.query.imgName;
-		const command = new GetObjectCommand({ Bucket: S3_BUCKET, Key: imgName });
+		const command = new GetObjectCommand({ Bucket: bucketName, Key: imgName });
 		const url = await getSignedUrl(s3, command, { expiresIn: validTimer });
 		return res.status(200).json({ url: url });
 	} catch (e: any) {
@@ -28,7 +29,7 @@ const getURL = async (req: Request, res: Response) => {
 
 export const uploadFile = async (imgName: string) => {
 	try {
-		const command = new PutObjectCommand({ Bucket: S3_BUCKET, Key: imgName, ContentType: "image/jpeg" });
+		const command = new PutObjectCommand({ Bucket: bucketName, Key: imgName, ContentType: "image/jpeg" });
 		return await getSignedUrl(s3, command, { expiresIn: validTimerUpload });
 	} catch (e: any) {
 		console.log(e);
@@ -38,7 +39,7 @@ export const uploadFile = async (imgName: string) => {
 
 export const getImagePresignUrl = async (imgName: string) => {
 	try {
-		const command = new GetObjectCommand({ Bucket: S3_BUCKET, Key: imgName });
+		const command = new GetObjectCommand({ Bucket: bucketName, Key: imgName });
 		const response = await getSignedUrl(s3, command, { expiresIn: validTimer });
 		return response;
 	} catch (e: any) {
