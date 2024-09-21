@@ -31,13 +31,21 @@ const createPost = async (req: Request, res: Response) => {
 
 const getAllUserPost = async (req: Request, res: Response) => {
 	try {
-		const posts = await PostModel.find({ parent_id: req.params.id });
-		for (const post of posts) {
+		const response = await PostModel.find({ parent_id: req.params.id });
+		for (const post of response) {
 			const comments = await CommentModel.find({ parent_id: post._id });
 			post.comments = comments;
 		}
 
-		return res.status(200).json({ data: posts });
+		for (const post of response) {
+			if (post.link !== null) {
+				const imageName = post.parent_id + "/" + post.link;
+				const url = await getImagePresignUrl(imageName);
+				post.link = url;
+			}
+		}
+
+		return res.status(200).json({ data: response });
 	} catch (e: any) {
 		return res.status(401).json({ message: e.message });
 	}
