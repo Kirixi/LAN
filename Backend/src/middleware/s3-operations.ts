@@ -12,7 +12,7 @@ const validTimerUpload = 500;
 const bucketName = S3_BUCKET.trim();
 
 const s3 = new S3Client({
-	region: process.env.REGION,
+	region: "ap-northeast-1",
 	credentials: fromEnv(),
 });
 
