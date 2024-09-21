@@ -38,7 +38,7 @@ export const uploadFile = async (imgName: string) => {
 export const getImagePresignUrl = async (imgName: string) => {
 	try {
 		const command = new GetObjectCommand({ Bucket: bucketName, Key: imgName });
-		const response = await getSignedUrl(s3, command, { expiresIn: validTimer, unhoistableHeaders: new Set(["x-amz-checksum-sha256"]) });
+		const response = await getSignedUrl(s3, command, { expiresIn: validTimer, signableHeaders: new Set(["content-type"]) });
 		return response;
 	} catch (e: any) {
 		console.log(e);
