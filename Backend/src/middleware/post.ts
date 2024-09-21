@@ -39,7 +39,7 @@ const getAllUserPost = async (req: Request, res: Response) => {
 
 		for (const post of response) {
 			if (post.link !== null) {
-				const imageName = post.parent_id + "/" + post.link;
+				const imageName = post.parent_id.slice(1) + "/" + post.link;
 				const url = await getImagePresignUrl(imageName);
 				post.link = url;
 			}
