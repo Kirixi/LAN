@@ -29,7 +29,7 @@ const getURL = async (req: Request, res: Response) => {
 
 export const uploadFile = async (imgName: string) => {
 	try {
-		const command = new PutObjectCommand({ Bucket: bucketName, Key: imgName, ContentType: "image/jpeg" });
+		const command = new PutObjectCommand({ Bucket: bucketName, Key: imgName, ContentType: "image/jpeg", ACL: "public-read" });
 		return await getSignedUrl(s3, command, { expiresIn: validTimerUpload });
 	} catch (e: any) {
 		console.log(e);
