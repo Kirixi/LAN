@@ -100,6 +100,7 @@ async function uploadToS3(image, link, fileType, parent_id) {
 		const response = await axios.put(link, image, {
 			headers: {
 				"Content-Type": fileType,
+				"x-amz-acl": "authenticated-read",
 			},
 		});
 		if (response.status === 200) {
