@@ -5,8 +5,6 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { fromEnv } from "@aws-sdk/credential-provider-env";
 import { Response, Request } from "express";
 
-const accessKeyId = AWS_ACCESS_KEY;
-const secretAccessKey = AWS_SECRET_KEY;
 const validTimer = 3000; //50 Mins
 const validTimerUpload = 500;
 const bucketName = S3_BUCKET.trim();
@@ -40,10 +38,7 @@ export const uploadFile = async (imgName: string) => {
 export const getImagePresignUrl = async (imgName: string) => {
 	try {
 		const command = new GetObjectCommand({ Bucket: bucketName, Key: imgName });
-		const response = await getSignedUrl(s3, command, { expiresIn: validTimer });
-		const credentials = await fromEnv()(); // Resolve the credentials
-		console.log("Access Key ID:", credentials.accessKeyId);
-		console.log("Secret Access Key:", credentials.secretAccessKey);
+		const response = await getSignedUrl(s3, command, { expiresIn: validTimer, unhoistableHeaders: new Set(["x-amz-checksum-sha256"]) });
 		return response;
 	} catch (e: any) {
 		console.log(e);
