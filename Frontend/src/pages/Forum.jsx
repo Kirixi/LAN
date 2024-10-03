@@ -362,7 +362,6 @@ function Forum(props) {
 	//This fucntion lets users upload their image to the staging area before being sent to S3
 	const uploadFile = (files) => {
 		const image = files[0];
-		console.log(image);
 		setImage(image);
 	};
 

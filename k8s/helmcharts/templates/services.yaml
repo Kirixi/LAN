@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: lan-frontend-service
+  namespace: lan-test
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+  selector:
+    app: lan-frontend
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: lan-api-service
+  namespace: lan-test
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: lan-api
+      

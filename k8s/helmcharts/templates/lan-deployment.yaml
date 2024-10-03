@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lan-frontend
+  namespace: lan-test
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: lan-frontend
+  template:
+    metadata:
+      labels:
+        app: lan-frontend
+    spec:
+      containers:
+        - name: lan-frontend
+          image: ghcr.io/kirixi/lanfrontend-stable:{{.Values.imagetag}}
+          env:
+            - name: MY_APP_API_LINK
+              valueFrom:
+                secretKeyRef:
+                  name: lan-secrets
+                  key: MY_APP_API_LINK
+      imagePullSecrets:
+        - name: ghcr-token
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lan-api
+  namespace: lan-test
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: lan-api
+  template:
+    metadata:
+      labels:
+        app: lan-api
+    spec:
+      containers:
+        - name: lan-api
+          image: ghcr.io/kirixi/lanserver-stable:{{.Values.imagetag}}
+          env:
+            - name: CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: lan-secrets
+                  key: CONNECTION_STRING
+            - name: REGION
+              valueFrom:
+                secretKeyRef:
+                  name: lan-secrets
+                  key: REGION
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: lan-secrets
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: lan-secrets
+                  key: AWS_SECRET_ACCESS_KEY
+            - name: S3_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: lan-secrets
+                  key: S3_BUCKET
+      imagePullSecrets:
+        - name: ghcr-token
