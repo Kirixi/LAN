@@ -35,7 +35,6 @@ function App() {
 		setCurrentUser(null);
 	};
 
-	console.log("APILINK: " + import.meta.env.VITE_API_LINK);
 	return (
 		<Fragment>
 			<div style={{ height: "100%" }}>

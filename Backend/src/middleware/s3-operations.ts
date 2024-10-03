@@ -36,8 +36,7 @@ export const uploadFile = async (imgName: string) => {
 		Key: imgName, // The file name (or path) to be uploaded
 		ContentType: "image/png", // MIME type of the file
 	});
-	const url = await getSignedUrl(s3, command, { expiresIn: 15 * 60 });
-	console.log(url); // Set expiration time for the upload URL
+	const url = await getSignedUrl(s3, command, { expiresIn: 15 * 60 }); // Set expiration time for the upload URL
 	return url;
 };
 
