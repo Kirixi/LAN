@@ -24,16 +24,16 @@ jobs:
 
       - name: Build backend image
         run: |
-          docker build . --tag ghcr.io/kirixi/lanserver-stable:${{ env.image_tag }}
+          docker build . --tag ghcr.io/kirixi/lanserver-stable:${{ steps.export-tag.outputs.image_tag }}
         working-directory: ./Backend
       - name: Build frontend image
         run: |
-          docker build . --tag ghcr.io/kirixi/lanfrontend-stable:${{ env.image_tag }}
+          docker build . --tag ghcr.io/kirixi/lanfrontend-stable:${{ steps.export-tag.outputs.image_tag }}
         working-directory: ./Frontend
       - name: Push the images into GHCR
         run: |
-          docker push ghcr.io/kirixi/lanfrontend-stable:${{ env.image_tag }}
-          docker push ghcr.io/kirixi/lanserver-stable:${{ env.image_tag }}
+          docker push ghcr.io/kirixi/lanfrontend-stable:${{ steps.export-tag.outputs.image_tag }}
+          docker push ghcr.io/kirixi/lanserver-stable:${{ steps.export-tag.outputs.image_tag }}
 
   deploy-eks:
     runs-on: ubuntu-latest
@@ -55,9 +55,6 @@ jobs:
 
       - name: Get kube config file
         run: aws eks update-kubeconfig --region ${{ secrets.REGION }} --name ${{ secrets.EKS_NAME }}
-
-      - name: Display tag
-        run: echo "${{ needs.build-and-push.outputs.image_tag }}"
 
       - name: Deploy with Helm
         uses: bitovi/github-actions-deploy-eks-helm@v1.2.10
