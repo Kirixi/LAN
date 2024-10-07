@@ -19,16 +19,16 @@ jobs:
 
       - name: Build backend image
         run: |
-          docker build . --tag ghcr.io/kirixi/lanserver-stable:${{ github.run_number}}
+          docker build . --tag ghcr.io/kirixi/lanserver-stable:${GITHUB_SHA::7}
         working-directory: ./Backend
       - name: Build frontend image
         run: |
-          docker build . --tag ghcr.io/kirixi/lanfrontend-stable:${{ github.run_number}}
+          docker build . --tag ghcr.io/kirixi/lanfrontend-stable:${GITHUB_SHA::7}
         working-directory: ./Frontend
       - name: Push the images into GHCR
         run: |
-          docker push ghcr.io/kirixi/lanfrontend-stable:${{ github.run_number}}
-          docker push ghcr.io/kirixi/lanserver-stable:${{ github.run_number}}
+          docker push ghcr.io/kirixi/lanfrontend-stable:${GITHUB_SHA::7}
+          docker push ghcr.io/kirixi/lanserver-stable:${GITHUB_SHA::7}
 
   deploy-eks:
     runs-on: ubuntu-latest
@@ -60,5 +60,5 @@ jobs:
           cluster-name: ${{ secrets.EKS_NAME }}
           chart-path: k8s/helmcharts
           namespace: default
-          values: imagetag=${{github.run_number}}
+          values: imagetag=${GITHUB_SHA::7}
           name: lan-helm
