@@ -65,5 +65,5 @@ jobs:
           cluster-name: ${{ secrets.EKS_NAME }}
           chart-path: k8s/helmcharts
           namespace: default
-          values: imagetag=${{ needs.build-and-push.outputs.image_tag }}
+          values: "imageTag=${{ needs.build-and-push.outputs.image_tag }}"
           name: lan-helm
