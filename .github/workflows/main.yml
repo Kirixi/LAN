@@ -16,7 +16,7 @@ jobs:
 
       - name: Set image tag
         id: export-tag
-        run: echo "image_tag=${GITHUB_SHA::7}" >> $GITHUB_ENV
+        run: echo "::set-output name=image_tag::${GITHUB_SHA::7}"
 
       - name: Login to GHCR
         run: |
@@ -56,6 +56,9 @@ jobs:
       - name: Get kube config file
         run: aws eks update-kubeconfig --region ${{ secrets.REGION }} --name ${{ secrets.EKS_NAME }}
 
+      - name: Display tag
+        run: echo "${{ needs.build-and-push.outputs.image_tag }}"
+
       - name: Deploy with Helm
         uses: bitovi/github-actions-deploy-eks-helm@v1.2.10
         with:
@@ -65,5 +68,5 @@ jobs:
           cluster-name: ${{ secrets.EKS_NAME }}
           chart-path: k8s/helmcharts
           namespace: default
-          values: "imageTag=${{ needs.build-and-push.outputs.image_tag }}"
+          values: imagetag=${{ needs.build-and-push.outputs.image_tag }}
           name: lan-helm
