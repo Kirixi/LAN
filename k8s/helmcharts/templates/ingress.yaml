@@ -6,7 +6,6 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
 spec:
   tls:
@@ -14,7 +13,7 @@ spec:
       - "lan.tjonathan.com"
       - "api.tjonathan.com"
       secretName: test-secret
-  ingressClassName: nginx
+  ingressClassName: alb
   rules:
     - host: lan.tjonathan.com
       http:
