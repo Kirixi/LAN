@@ -16,6 +16,8 @@ spec:
       containers:
         - name: lan-frontend
           image: ghcr.io/kirixi/lanfrontend-stable:{{.Values.imagetag}}
+          ports:
+          - containerPort: 80
           env:
             - name: MY_APP_API_LINK
               valueFrom:
@@ -43,6 +45,8 @@ spec:
       containers:
         - name: lan-api
           image: ghcr.io/kirixi/lanserver-stable:{{.Values.imagetag}}
+          ports:
+          - containerPort: 8080 
           env:
             - name: CONNECTION_STRING
               valueFrom:
